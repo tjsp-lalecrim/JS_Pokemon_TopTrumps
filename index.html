@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="js/PokemonCard.js" defer></script>
+    <script src="js/Type.js" defer></script>
+    <script src="js/Stat.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <title>Cards</title>
+</head>
+
+<body>
+    <div class="score">
+        <span>Your Cards: <span id="your-cards"></span></span>
+        <span>Opponent Cards: <span id="opponent-cards"> </span></span>
+    </div>
+    <div class="table">
+        <div class="col">
+            <span class="pokemon-label">
+                <span id="your-label"></span>
+                <img id="your-type" src="" alt="Your Type">
+            </span>
+            <img id="your-img" src="" alt="Pokemon Card">
+            <div id="your-options" class="stat-options"></div>
+        </div>
+        <div class="slider"> VS. </div>
+        <div class="col">
+            <span class="pokemon-label">
+                <span id="opponent-label"></span>
+                <img id="opponent-type" src="" alt="Opponent Type">
+            </span>
+            <img id="opponent-img" src="" alt="Pokemon Card">
+            <div id="opponent-options" class="stat-options"></div>
+        </div>
+    </div>
+    <div id="menu" class="menu">
+        <span id="result-message"></span>
+        <button id="reset-game" class="start-button">Start</button>
+    </div>
+</body>
+
+</html>

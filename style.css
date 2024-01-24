@@ -1,0 +1,154 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+    background: #343541;
+}
+
+.score {
+    width: 100%;
+    display: none;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1.5rem;
+    color: #d9d9e3;
+}
+
+.table {
+    width: 100%;
+    display: none;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.slider {
+    color: #ccc;
+}
+
+.table .col {
+    width: 256px;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    background: #f7f7f8;
+}
+
+.table .col img {
+    width: 256px;
+    height: 192px;
+    border: 1px solid black;
+}
+
+.col .stat-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.col .pokemon-label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.pokemon-label * {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.pokemon-label img {
+    width: 32px !important;
+    height: 24px !important;
+}
+
+.stat-options button {
+    min-width: 256px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: none;
+    background: #d9d9e3;
+}
+
+.stat-options button:hover,
+.stat-options button.active {
+    background: #ccc;
+}
+
+.stat-options button span {
+    pointer-events: none;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.stat-options button.stat-increased {
+    color: green;
+}
+
+.stat-options button.stat-reduced {
+    color: red;
+}
+
+.menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: #343541;
+}
+
+.menu button {
+    font-size: 2rem;
+    padding: 10px;
+    outline: none;
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 600px) {
+    .table,
+    .score {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .table .col {
+        width: 175px;
+        height: 290px;
+    }
+
+    .table .col img {
+        width: 128px;
+        height: 96px;
+    }
+
+    .stat-options button {
+        min-width: 128px;
+    }
+
+    .stat-options button span {
+        padding: 0;
+    }
+
+    .stat-options button {
+        margin: 0;
+    }
+}
