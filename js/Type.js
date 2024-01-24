@@ -20,5 +20,5 @@ function calculateTypeMultiplier(offensiveType, defensiveType) {
         'fairy': { 'normal': 1.0, 'fire': 0.5, 'water': 1.0, 'grass': 1.0, 'electric': 1.0, 'ice': 1.0, 'fighting': 0.5, 'poison': 2.0, 'ground': 1.0, 'flying': 1.0, 'psychic': 1.0, 'bug': 1.0, 'rock': 1.0, 'ghost': 1.0, 'dragon': 2.0, 'dark': 0.5, 'steel': 2.0, 'fairy': 1.0 },
     };
     
-    return typeChart[offensiveType][defensiveType] ?? 0;
+    return typeChart[offensiveType][defensiveType] ?? 1;
 }
