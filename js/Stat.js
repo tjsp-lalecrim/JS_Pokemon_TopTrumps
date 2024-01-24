@@ -1,12 +1,18 @@
 const stats = ['HP', 'Attack', 'Defense', 'Special_Attack', 'Special_Defense', 'Speed'];
 
 function getStatValue(card, stat) {
-    if (stat === 'HP') return card.hp;
-    if (stat === 'Attack') return card.attack;
-    if (stat === 'Defense') return card.defense;
-    if (stat === 'Special_Attack') return card.specialAttack;
-    if (stat === 'Special_Defense') return card.specialDefense;
-    if (stat === 'Speed') return card.speed;
+    const statProperty = {
+        'HP': 'hp',
+        'Attack': 'attack',
+        'Defense': 'defense',
+        'Special_Attack': 'specialAttack',
+        'Special_Defense': 'specialDefense',
+        'Speed': 'speed'
+    };
+
+    if (statProperty.hasOwnProperty(stat)) {
+        return card[statProperty[stat]];
+    }
 
     console.error('Invalid stat or card');
     return null;
