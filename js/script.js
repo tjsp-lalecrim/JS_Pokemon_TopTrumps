@@ -30,10 +30,9 @@ let opponentCard = null;
 
 // Game Initialization
 function startGame() {
-    document.getElementById('menu').style.display = 'none';
-    document.querySelector('.score').style.display = 'flex';
-    document.querySelector('.table').style.display = 'flex';
-
+    hideElements('.menu');
+    showElement('table');
+    showElement('score');
     resetVariables();
     mountDecks();
 }
