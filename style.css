@@ -17,23 +17,29 @@ body {
     width: 100%;
     display: none;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+    gap:100px;
     font-size: 1.5rem;
     color: #d9d9e3;
+}
+
+.score span{
+    text-align: center;
 }
 
 .table {
     width: 100%;
     display: none;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .slider {
     color: #ccc;
+    padding: 10px;
 }
 
-.table .col {
+ .card {
     width: 256px;
     height: 450px;
     display: flex;
@@ -44,18 +50,18 @@ body {
     background: #f7f7f8;
 }
 
-.table .col img {
+.card img {
     width: 256px;
     height: 192px;
     border: 1px solid black;
 }
 
-.col .stat-options {
+.card .stat-options {
     display: flex;
     flex-direction: column;
 }
 
-.col .pokemon-label {
+.card .pokemon-label {
     width: 100%;
     display: flex;
     align-items: center;
@@ -130,12 +136,12 @@ body {
         gap: 10px;
     }
 
-    .table .col {
+    .table .card {
         width: 175px;
         height: 290px;
     }
 
-    .table .col img {
+    .table .card img {
         width: 128px;
         height: 96px;
     }
