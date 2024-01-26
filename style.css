@@ -21,7 +21,11 @@ body {
 }
 
 .slider {
-    max-width: 150px;
+    width: 200px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     border: 1px solid #ccc;
     color: #ccc;
     padding: 10px;
@@ -94,6 +98,7 @@ body {
 .stat-options button:hover,
 .stat-options button.active {
     background: #FFF8DC;
+    font-weight: 700;
 }
 
 .stat-options button span {

@@ -2,6 +2,7 @@
 const getElement = (id) => document.getElementById(id);
 const getQuerySelector = (selector) => document.querySelector(selector);
 
+const elGameLog = getElement('game-log');
 const elYourPoints = getQuerySelector('#your-points');
 const elOpponentPoints = getQuerySelector('#opponent-points');
 const elYourCards = getQuerySelector('#your-cards');
@@ -66,6 +67,8 @@ function popCards() {
     yourCard = yourDeck.pop();
     opponentCard = opponentDeck.pop();
 
+    resetLog();
+    addLog('Choose a stat');
     updateDecksLength();
     resetCardsAnimations();
     updateImgs();
@@ -78,6 +81,18 @@ function resetCardsAnimations() {
         getElement(id).classList.remove('shake', 'fade');
     });
 }
+
+function addLog(message) {
+    const elLog = document.createElement('span');
+    elLog.classList.add('log');
+    elLog.innerText = message;
+    elGameLog.append(elLog);
+}
+
+function resetLog() {
+    elGameLog.innerHTML = '';
+}
+
 
 function updateDecksLength() {
     elYourCards.innerText = yourDeck.length + 1;
@@ -137,6 +152,8 @@ function createStatButton(stat, id, card, showStatValue, isClickable) {
 function chooseStat(e) {
     const chosenStat = e.target.id;
 
+    addLog(`You choose ${chosenStat}`);
+
     disableYourButtons();
     revealOpponent();
     highlightStats(chosenStat);
@@ -174,6 +191,28 @@ function compareStats(chosenStat) {
     typeMultiplier = calculateTypeMultiplier(yourCard.type, opponentCard.type);
     yourValueWithMultiplier = calculateStatMultiplier(yourCard, opponentCard, chosenStat);
     opponentValue = getStatValue(opponentCard, chosenStat);
+
+    addLog(`Your base value is ${yourValue}`);
+    addLog(`Your type is "${yourCard.type}" and Opponent type is "${opponentCard.type}"`);
+    if (typeMultiplier === 0.5) {
+        addLog(`${yourCard.type} type is reduced by half against ${opponentCard.type} type`);
+        addLog(`Now your value is ${yourValueWithMultiplier}`);
+    } else if (typeMultiplier === 2) {
+        addLog(`"${yourCard.type}" type is doubled against "${opponentCard.type}" type`);
+        addLog(`Now your value is ${yourValueWithMultiplier}`);
+    }
+
+    addLog(`The opponent value is ${opponentValue}`);
+
+    if (yourValueWithMultiplier > opponentValue) {
+        addLog(`You win!`);
+    }
+    else if (yourValueWithMultiplier < opponentValue) {
+        addLog(`You lose!`);
+    }
+    else {
+        addLog(`Draw!`);
+    }
 
     updateChosenStatValue(chosenStat, yourValue, yourValueWithMultiplier, typeMultiplier);
 }
@@ -228,7 +267,7 @@ function applyCardsAnimations(yourStatValue, opponentStatValue) {
         opponentCardElement.classList.add('fade');
     }
 
-    setTimeout(() => addCurrentCardsToWinner(yourValueWithMultiplier, opponentStatValue), 1000);
+    setTimeout(() => addCurrentCardsToWinner(yourValueWithMultiplier, opponentStatValue), 2000);
 }
 
 // Game Over Handling
@@ -259,14 +298,14 @@ function selectPack(pack) {
 }
 
 // Event Listeners
-getElement('first-stage-pack').addEventListener('click', function() {
+getElement('first-stage-pack').addEventListener('click', function () {
     selectPack(firstStagePack);
 });
 
-getElement('mid-stage-pack').addEventListener('click', function() {
+getElement('mid-stage-pack').addEventListener('click', function () {
     selectPack(midStagePack);
 });
 
-getElement('last-stage-pack').addEventListener('click', function() {
+getElement('last-stage-pack').addEventListener('click', function () {
     selectPack(lastStagePack);
 });
