@@ -28,6 +28,10 @@ let yourDeck = [];
 let opponentDeck = [];
 let yourCard = null;
 let opponentCard = null;
+let yourValue = 0;
+let typeMultiplier = 1;
+let yourValueWithMultiplier = 0;
+let opponentValue = 0;
 
 // Game Initialization
 function startGame() {
@@ -47,13 +51,9 @@ function resetVariables() {
 
 // Deck Handling
 function mountDecks() {
-    // get all cards
     const cards = currentPack.slice(0, currentPack.length);
-
-    // shuffle
     const shuffledCards = cards.sort(() => Math.random() - 0.5);
 
-    // half of the cards for both players.
     yourDeck = shuffledCards.slice(0, deckLength);
     opponentDeck = shuffledCards.slice(deckLength, deckLength * 2);
 
@@ -65,22 +65,20 @@ function popCards() {
         return handleGameOver();
     }
 
-    resetCardsAnimations();
-
     yourCard = yourDeck.pop();
     opponentCard = opponentDeck.pop();
 
     updateDecksLength();
+    resetCardsAnimations();
     updateImgs();
     updateNameAndType();
     updateStatsButtons();
 }
 
 function resetCardsAnimations() {
-    document.getElementById('your-current-card').classList.remove('shake');
-    document.getElementById('your-current-card').classList.remove('fade');
-    document.getElementById('opponent-current-card').classList.remove('fade');
-    document.getElementById('opponent-current-card').classList.remove('shake');
+    ['your-current-card', 'opponent-current-card'].forEach(id => {
+        getElement(id).classList.remove('shake', 'fade');
+    });
 }
 
 function updateDecksLength() {
@@ -113,7 +111,7 @@ function updateStatsButtons() {
 
         const elOpponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, false, false);
         elOpponentOptions.append(elOpponentStat);
-    })
+    });
 }
 
 function createStatButton(stat, id, card, showStatValue, isClickable) {
@@ -121,11 +119,11 @@ function createStatButton(stat, id, card, showStatValue, isClickable) {
     elStat.id = id;
 
     const elStatDescription = document.createElement('span');
-    elStatDescription.innerText = `${stat}`;
+    elStatDescription.innerText = stat;
 
     const elStatValue = document.createElement('span');
     elStatValue.classList.add('stat-value');
-    elStatValue.innerText = showStatValue ? `${getStatValue(card, stat)}` : '???';
+    elStatValue.innerText = showStatValue ? getStatValue(card, stat) : '???';
 
     elStat.append(elStatDescription);
     elStat.append(elStatValue);
@@ -145,9 +143,7 @@ function chooseStat(e) {
     revealOpponent();
     highlightStats(chosenStat);
     compareStats(chosenStat);
-
 }
-
 
 function disableYourButtons() {
     const elYourButtons = elYourOptions.querySelectorAll('button');
@@ -166,78 +162,76 @@ function _revealOpponentStats() {
     stats.forEach(stat => {
         const elOpponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, true, false);
         elOpponentOptions.append(elOpponentStat);
-    })
+    });
 }
 
 function highlightStats(chosenStat) {
-    const yourStat = getElement(chosenStat);
-    const opponentStat = getElement('opp-' + chosenStat);
-
-    yourStat.classList.add('active');
-    opponentStat.classList.add('active');
+    [chosenStat, `opp-${chosenStat}`].forEach(id => {
+        getElement(id).classList.add('active');
+    });
 }
 
 function compareStats(chosenStat) {
-    const yourValue = getStatValue(yourCard, chosenStat);
-    const yourValueWithMultiplier = calculateStatMultiplier(yourCard, opponentCard, chosenStat);
-    const opponentValue = getStatValue(opponentCard, chosenStat);
-    const typeMultiplier = calculateTypeMultiplier(yourCard.type, opponentCard.type);
+    yourValue = getStatValue(yourCard, chosenStat);
+    typeMultiplier = calculateTypeMultiplier(yourCard.type, opponentCard.type);
+    yourValueWithMultiplier = calculateStatMultiplier(yourCard, opponentCard, chosenStat);
+    opponentValue = getStatValue(opponentCard, chosenStat);
 
-    if (yourValueWithMultiplier > opponentValue) {
-        document.getElementById('your-current-card').classList.add('shake');
-        document.getElementById('opponent-current-card').classList.add('fade');
-        yourDeck.unshift(yourCard, opponentCard);
-    }
-    else if (yourValueWithMultiplier < opponentValue) {
-        document.getElementById('your-current-card').classList.add('fade');
-        document.getElementById('opponent-current-card').classList.add('shake');
-        opponentDeck.unshift(yourCard, opponentCard);
-    }
-
-    updateChosenStatWithMultiplier(chosenStat, yourValue, yourValueWithMultiplier, typeMultiplier);
-
-
-    if (yourValueWithMultiplier > opponentValue) {
-        yourDeck.unshift(yourCard, opponentCard);
-    }
-    else if (yourValueWithMultiplier < opponentValue) {
-        opponentDeck.unshift(yourCard, opponentCard);
-    }
-
-
-    setTimeout(applyCardsAnimations(yourValueWithMultiplier, opponentValue), 2000);
-    setTimeout(popCards, 4000);
+    updateChosenStatValue(chosenStat, yourValue, yourValueWithMultiplier, typeMultiplier);
 }
 
-function updateChosenStatWithMultiplier(chosenStat, oldValue, newValue, typeMultiplier) {
-    
-    const elChosenStat = elYourOptions.querySelector(`#${chosenStat}`);
-    if (typeMultiplier < 1 || typeMultiplier > 1) {
+function addCurrentCardsToWinner(yourStatValue, opponentStatValue) {
+    if (yourStatValue > opponentStatValue) {
+        yourDeck.unshift(yourCard, opponentCard);
+    } else if (yourStatValue < opponentStatValue) {
+        opponentDeck.unshift(yourCard, opponentCard);
+    } else {
+        yourDeck.unshift(yourCard);
+        opponentDeck.unshift(opponentCard);
+    }
+
+    setTimeout(popCards, 1000);
+}
+
+function updateChosenStatValue(chosenStat, oldValue, newValue, typeValue) {
+    const elChosenStat = getElement(chosenStat);
+
+    if (typeValue !== 1) {
         elChosenStat.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
     }
 
-    applyStatAnimation(elChosenStat, typeMultiplier);
+    applyStatAnimation(chosenStat, typeValue);
 }
 
-function applyStatAnimation(elChosenStat, typeMultiplier) {
-    if (typeMultiplier > 1) {
+function applyStatAnimation(chosenStat, typeValue) {
+    const elChosenStat = getElement(chosenStat);
+
+    if (typeValue > 1) {
         elChosenStat.classList.add('stat-increased');
-    } else if (typeMultiplier < 1) {
+    } else if (typeValue < 1) {
         elChosenStat.classList.add('stat-reduced');
     }
+
+    setTimeout(() => applyCardsAnimations(yourValueWithMultiplier, opponentValue), 1000);
 }
 
-function applyCardsAnimations(yourValue, opponentValue) {
-    if (yourValue > opponentValue) {
-        document.getElementById('your-current-card').classList.add('shake');
-        document.getElementById('opponent-current-card').classList.add('fade');
-    }
-    else if (yourValue < opponentValue) {
-        document.getElementById('your-current-card').classList.add('fade');
-        document.getElementById('opponent-current-card').classList.add('shake');
-    }
-}
+function applyCardsAnimations(yourStatValue, opponentStatValue) {
+    const yourCardElement = getElement('your-current-card');
+    const opponentCardElement = getElement('opponent-current-card');
 
+    if (yourStatValue > opponentStatValue) {
+        yourCardElement.classList.add('shake');
+        opponentCardElement.classList.add('fade');
+    } else if (yourStatValue < opponentStatValue) {
+        yourCardElement.classList.add('fade');
+        opponentCardElement.classList.add('shake');
+    } else {
+        yourCardElement.classList.add('fade');
+        opponentCardElement.classList.add('fade');
+    }
+
+    setTimeout(() => addCurrentCardsToWinner(yourValueWithMultiplier, opponentStatValue), 1000);
+}
 
 // Game Over Handling
 function handleGameOver() {
@@ -246,16 +240,12 @@ function handleGameOver() {
     showElement('menu');
     const elResultMessage = getElement('result-message');
 
-    if (yourDeck.length == 0) {
-        elResultMessage.innerText = 'You lose!';
-    } else {
-        elResultMessage.innerText = 'You win!';
-    }
+    elResultMessage.innerText = yourDeck.length === 0 ? 'You lose!' : 'You win!';
 }
 
 // Display Handling
 function hideElements(...selectors) {
-    selectors.forEach((selector) => {
+    selectors.forEach(selector => {
         getQuerySelector(selector).style.display = 'none';
     });
 }
@@ -266,6 +256,3 @@ function showElement(selector) {
 
 // Event Listeners
 elResetButton.addEventListener('click', startGame);
-
-
-
