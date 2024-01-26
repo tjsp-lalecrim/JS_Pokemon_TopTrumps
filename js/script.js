@@ -152,8 +152,6 @@ function createStatButton(stat, id, card, showStatValue, isClickable) {
 function chooseStat(e) {
     const chosenStat = e.target.id;
 
-    addLog(`You choose ${chosenStat}`);
-
     disableYourButtons();
     revealOpponent();
     highlightStats(chosenStat);
@@ -192,17 +190,18 @@ function compareStats(chosenStat) {
     yourValueWithMultiplier = calculateStatMultiplier(yourCard, opponentCard, chosenStat);
     opponentValue = getStatValue(opponentCard, chosenStat);
 
-    addLog(`Your base value is ${yourValue}`);
-    addLog(`Your type is "${yourCard.type}" and Opponent type is "${opponentCard.type}"`);
-    if (typeMultiplier === 0.5) {
-        addLog(`${yourCard.type} type is reduced by half against ${opponentCard.type} type`);
-        addLog(`Now your value is ${yourValueWithMultiplier}`);
-    } else if (typeMultiplier === 2) {
-        addLog(`"${yourCard.type}" type is doubled against "${opponentCard.type}" type`);
-        addLog(`Now your value is ${yourValueWithMultiplier}`);
-    }
+    addLog(`${chosenStat} => ${yourValue} VS. ${opponentValue}`);
 
-    addLog(`The opponent value is ${opponentValue}`);
+    if (typeMultiplier !== 1) {
+        addLog(`Types =>"${yourCard.type}" VS. "${opponentCard.type}"`);
+        if (typeMultiplier === 0.5) {
+            addLog(`${yourCard.type} type is reduced by half against ${opponentCard.type} type`);
+            addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
+        } else if (typeMultiplier === 2) {
+            addLog(`"${yourCard.type}" type is doubled against "${opponentCard.type}" type`);
+            addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
+        }
+    }
 
     if (yourValueWithMultiplier > opponentValue) {
         addLog(`You win!`);
@@ -267,7 +266,7 @@ function applyCardsAnimations(yourStatValue, opponentStatValue) {
         opponentCardElement.classList.add('fade');
     }
 
-    setTimeout(() => addCurrentCardsToWinner(yourValueWithMultiplier, opponentStatValue), 2000);
+    setTimeout(() => addCurrentCardsToWinner(yourValueWithMultiplier, opponentStatValue), 1000);
 }
 
 // Game Over Handling
