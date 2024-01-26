@@ -20,7 +20,7 @@ body {
     justify-content: center;
 }
 
-.slider {
+.col {
     width: 225px;
     height: auto;
     display: flex;
