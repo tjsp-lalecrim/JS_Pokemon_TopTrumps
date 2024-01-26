@@ -2,24 +2,26 @@
 const getElement = (id) => document.getElementById(id);
 const getQuerySelector = (selector) => document.querySelector(selector);
 
-const elGameLog = getElement('game-log');
-const elYourPoints = getQuerySelector('#your-points');
-const elOpponentPoints = getQuerySelector('#opponent-points');
-const elYourCards = getQuerySelector('#your-cards');
-const elOpponentCards = getQuerySelector('#opponent-cards');
-const elYourName = getQuerySelector('#your-label');
-const elOpponentName = getQuerySelector('#opponent-label');
-const elYourType = getQuerySelector('#your-type');
-const elOpponentType = getQuerySelector('#opponent-type');
-const elYourImg = getElement('your-img');
-const elOpponentImg = getElement('opponent-img');
-const elYourOptions = getQuerySelector('#your-options');
-const elOpponentOptions = getQuerySelector('#opponent-options');
-const elSelectedStat = getQuerySelector('#selected-stat');
-const elYourStatValue = getQuerySelector('#your-stat-value');
-const elOpponentStatValue = getQuerySelector('#opponent-stat-value');
-const elTypeMultiplier = getQuerySelector('#type-multiplier');
-const elResult = getQuerySelector('#result');
+const elements = {
+    gameLog: getElement('game-log'),
+    yourPoints: getQuerySelector('#your-points'),
+    opponentPoints: getQuerySelector('#opponent-points'),
+    yourCards: getQuerySelector('#your-cards'),
+    opponentCards: getQuerySelector('#opponent-cards'),
+    yourName: getQuerySelector('#your-label'),
+    opponentName: getQuerySelector('#opponent-label'),
+    yourType: getQuerySelector('#your-type'),
+    opponentType: getQuerySelector('#opponent-type'),
+    yourImg: getElement('your-img'),
+    opponentImg: getElement('opponent-img'),
+    yourOptions: getQuerySelector('#your-options'),
+    opponentOptions: getQuerySelector('#opponent-options'),
+    selectedStat: getQuerySelector('#selected-stat'),
+    yourStatValue: getQuerySelector('#your-stat-value'),
+    opponentStatValue: getQuerySelector('#opponent-stat-value'),
+    typeMultiplier: getQuerySelector('#type-multiplier'),
+    result: getQuerySelector('#result'),
+};
 
 // Global variables
 let currentPack = [...lastStagePack];
@@ -83,69 +85,68 @@ function resetCardsAnimations() {
 }
 
 function addLog(message) {
-    const elLog = document.createElement('span');
-    elLog.classList.add('log');
-    elLog.innerText = message;
-    elGameLog.append(elLog);
+    const logElement = document.createElement('span');
+    logElement.classList.add('log');
+    logElement.innerText = message;
+    elements.gameLog.append(logElement);
 }
 
 function resetLog() {
-    elGameLog.innerHTML = '';
+    elements.gameLog.innerHTML = '';
 }
 
-
 function updateDecksLength() {
-    elYourCards.innerText = yourDeck.length + 1;
-    elOpponentCards.innerText = opponentDeck.length + 1;
+    elements.yourCards.innerText = yourDeck.length + 1;
+    elements.opponentCards.innerText = opponentDeck.length + 1;
 }
 
 function updateImgs() {
-    elYourImg.src = `img/pokemons/${yourCard.name}.png`;
-    elOpponentImg.src = 'img/pokeball.png';
+    elements.yourImg.src = `img/pokemons/${yourCard.name}.png`;
+    elements.opponentImg.src = 'img/pokeball.png';
 }
 
 function updateNameAndType() {
-    elYourName.innerText = yourCard.name;
-    elYourType.src = `img/types/${yourCard.type}.png`;
-    elYourType.alt = `${yourCard.type} Type`;
+    elements.yourName.innerText = yourCard.name;
+    elements.yourType.src = `img/types/${yourCard.type}.png`;
+    elements.yourType.alt = `${yourCard.type} Type`;
 
-    elOpponentName.innerText = '???';
-    elOpponentType.src = `img/types/${opponentCard.type}.png`;
-    elOpponentType.alt = `${opponentCard.type} Type`;
+    elements.opponentName.innerText = '???';
+    elements.opponentType.src = `img/types/${opponentCard.type}.png`;
+    elements.opponentType.alt = `${opponentCard.type} Type`;
 }
 
 function updateStatsButtons() {
-    elYourOptions.innerHTML = '';
-    elOpponentOptions.innerHTML = '';
+    elements.yourOptions.innerHTML = '';
+    elements.opponentOptions.innerHTML = '';
 
     stats.forEach(stat => {
-        const elYourStat = createStatButton(stat, `${stat}`, yourCard, true, true);
-        elYourOptions.append(elYourStat);
+        const yourStatButton = createStatButton(stat, `${stat}`, yourCard, true, true);
+        elements.yourOptions.append(yourStatButton);
 
-        const elOpponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, false, false);
-        elOpponentOptions.append(elOpponentStat);
+        const opponentStatButton = createStatButton(stat, `opp-${stat}`, opponentCard, false, false);
+        elements.opponentOptions.append(opponentStatButton);
     });
 }
 
 function createStatButton(stat, id, card, showStatValue, isClickable) {
-    const elStat = document.createElement('button');
-    elStat.id = id;
+    const statButton = document.createElement('button');
+    statButton.id = id;
 
-    const elStatDescription = document.createElement('span');
-    elStatDescription.innerText = stat;
+    const statDescription = document.createElement('span');
+    statDescription.innerText = stat;
 
-    const elStatValue = document.createElement('span');
-    elStatValue.classList.add('stat-value');
-    elStatValue.innerText = showStatValue ? getStatValue(card, stat) : '???';
+    const statValue = document.createElement('span');
+    statValue.classList.add('stat-value');
+    statValue.innerText = showStatValue ? getStatValue(card, stat) : '???';
 
-    elStat.append(elStatDescription);
-    elStat.append(elStatValue);
+    statButton.append(statDescription);
+    statButton.append(statValue);
 
     if (isClickable) {
-        elStat.addEventListener('click', e => chooseStat(e));
+        statButton.addEventListener('click', e => chooseStat(e));
     }
 
-    return elStat;
+    return statButton;
 }
 
 // Gameplay Functions
@@ -159,22 +160,22 @@ function chooseStat(e) {
 }
 
 function disableYourButtons() {
-    const elYourButtons = elYourOptions.querySelectorAll('button');
-    elYourButtons.forEach(button => button.style.pointerEvents = 'none');
+    const yourButtons = elements.yourOptions.querySelectorAll('button');
+    yourButtons.forEach(button => button.style.pointerEvents = 'none');
 }
 
 function revealOpponent() {
-    elOpponentImg.src = `img/pokemons/${opponentCard.name}.png`;
-    elOpponentName.innerText = opponentCard.name;
+    elements.opponentImg.src = `img/pokemons/${opponentCard.name}.png`;
+    elements.opponentName.innerText = opponentCard.name;
     _revealOpponentStats();
 }
 
 function _revealOpponentStats() {
-    elOpponentOptions.innerHTML = '';
+    elements.opponentOptions.innerHTML = '';
 
     stats.forEach(stat => {
-        const elOpponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, true, false);
-        elOpponentOptions.append(elOpponentStat);
+        const opponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, true, false);
+        elements.opponentOptions.append(opponentStat);
     });
 }
 
@@ -191,16 +192,13 @@ function compareStats(chosenStat) {
     opponentValue = getStatValue(opponentCard, chosenStat);
 
     addLog(`${chosenStat} => ${yourValue} VS. ${opponentValue}`);
-
-    if (typeMultiplier !== 1) {
-        addLog(`Types =>"${yourCard.type}" VS. "${opponentCard.type}"`);
-        if (typeMultiplier === 0.5) {
-            addLog(`${yourCard.type} type is reduced by half against ${opponentCard.type} type`);
-            addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
-        } else if (typeMultiplier === 2) {
-            addLog(`"${yourCard.type}" type is doubled against "${opponentCard.type}" type`);
-            addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
-        }
+    addLog(`Types =>"${yourCard.type}" VS. "${opponentCard.type}"`);
+    if (typeMultiplier === 0.5) {
+        addLog(`${yourCard.type} type is reduced by half against ${opponentCard.type} type`);
+        addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
+    } else if (typeMultiplier === 2) {
+        addLog(`"${yourCard.type}" type is doubled against "${opponentCard.type}" type`);
+        addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
     }
 
     if (yourValueWithMultiplier > opponentValue) {
@@ -230,25 +228,25 @@ function addCurrentCardsToWinner(yourStatValue, opponentStatValue) {
 }
 
 function updateChosenStatValue(chosenStat, oldValue, newValue, typeValue) {
-    const elChosenStat = getElement(chosenStat);
+    const chosenStatElement = getElement(chosenStat);
 
     if (typeValue !== 1) {
-        elChosenStat.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
+        chosenStatElement.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
     }
 
     applyStatAnimation(chosenStat, typeValue);
 }
 
 function applyStatAnimation(chosenStat, typeValue) {
-    const elChosenStat = getElement(chosenStat);
+    const chosenStatElement = getElement(chosenStat);
 
     if (typeValue > 1) {
-        elChosenStat.classList.add('stat-increased');
+        chosenStatElement.classList.add('stat-increased');
     } else if (typeValue < 1) {
-        elChosenStat.classList.add('stat-reduced');
+        chosenStatElement.classList.add('stat-reduced');
     }
 
-    setTimeout(() => applyCardsAnimations(yourValueWithMultiplier, opponentValue), 1000);
+    setTimeout(() => applyCardsAnimations(yourValueWithMultiplier, opponentValue), 1500);
 }
 
 function applyCardsAnimations(yourStatValue, opponentStatValue) {
@@ -274,9 +272,9 @@ function handleGameOver() {
     updateDecksLength();
     hideElements('.table');
     showElement('menu');
-    const elResultMessage = getElement('result-message');
+    const resultMessage = getElement('result-message');
 
-    elResultMessage.innerText = yourDeck.length === 0 ? 'You lose!' : 'You win!';
+    resultMessage.innerText = yourDeck.length === 0 ? 'You lose!' : 'You win!';
 }
 
 // Display Handling
