@@ -253,28 +253,21 @@ function showElement(selector) {
     getElement(selector).style.display = 'flex';
 }
 
-function selectFirstPack() {
-    currentPack = [...firstStagePack];
+function selectPack(pack) {
+    currentPack = [...pack];
     deckLength = currentPack.length / 2;
-
-    startGame();
-}
-
-function selectMidPack() {
-    currentPack = [...midStagePack];
-    deckLength = currentPack.length / 2;
-
-    startGame();
-}
-
-function selectLastPack() {
-    currentPack = [...lastStagePack];
-    deckLength = currentPack.length / 2;
-
     startGame();
 }
 
 // Event Listeners
-getElement('first-stage-pack').addEventListener('click', selectFirstPack);
-getElement('mid-stage-pack').addEventListener('click', selectMidPack);
-getElement('last-stage-pack').addEventListener('click', selectLastPack);
+getElement('first-stage-pack').addEventListener('click', function() {
+    selectPack(firstStagePack);
+});
+
+getElement('mid-stage-pack').addEventListener('click', function() {
+    selectPack(midStagePack);
+});
+
+getElement('last-stage-pack').addEventListener('click', function() {
+    selectPack(lastStagePack);
+});

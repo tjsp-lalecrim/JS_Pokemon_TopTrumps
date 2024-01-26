@@ -134,20 +134,23 @@ body {
     background: #343541;
 }
 
-.menu .menu-message{
+.menu .menu-message {
     color: #ccc;
     padding: 10px;
 }
 
-.menu .packs{
+.menu .packs {
     display: flex;
     gap: 50px;
 }
 
-.packs .pokemon-pack{
+.packs .pokemon-pack {
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    padding: 10px;
+    border: 5px solid #ccc;
+    border-radius: 10px;
     color: #ccc;
 }
 
@@ -192,8 +195,7 @@ body {
 
 @media screen and (max-width: 600px) {
 
-    .table,
-    .score {
+    .table {
         flex-direction: column;
         gap: 10px;
     }
