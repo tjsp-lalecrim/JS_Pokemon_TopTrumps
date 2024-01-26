@@ -22,7 +22,8 @@ const elTypeMultiplier = getQuerySelector('#type-multiplier');
 const elResult = getQuerySelector('#result');
 
 // Global variables
-let deckLength = 20;
+let currentPack = [...lastStagePack];
+let deckLength = currentPack.length / 2;
 let yourDeck = [];
 let opponentDeck = [];
 let yourCard = null;
@@ -47,7 +48,7 @@ function resetVariables() {
 // Deck Handling
 function mountDecks() {
     // get all cards
-    const cards = pokemonCards.slice(0, pokemonCards.length);
+    const cards = currentPack.slice(0, currentPack.length);
 
     // shuffle
     const shuffledCards = cards.sort(() => Math.random() - 0.5);
@@ -74,8 +75,8 @@ function popCards() {
 }
 
 function updateDecksLength() {
-    elYourCards.innerText = yourDeck.length;
-    elOpponentCards.innerText = opponentDeck.length;
+    elYourCards.innerText = yourDeck.length + 1;
+    elOpponentCards.innerText = opponentDeck.length + 1;
 }
 
 function updateImgs() {
