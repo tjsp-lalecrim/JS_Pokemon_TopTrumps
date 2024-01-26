@@ -2,7 +2,6 @@
 const getElement = (id) => document.getElementById(id);
 const getQuerySelector = (selector) => document.querySelector(selector);
 
-const elResetButton = getElement('reset-game');
 const elYourPoints = getQuerySelector('#your-points');
 const elOpponentPoints = getQuerySelector('#opponent-points');
 const elYourCards = getQuerySelector('#your-cards');
@@ -254,5 +253,28 @@ function showElement(selector) {
     getElement(selector).style.display = 'flex';
 }
 
+function selectFirstPack() {
+    currentPack = [...firstStagePack];
+    deckLength = currentPack.length / 2;
+
+    startGame();
+}
+
+function selectMidPack() {
+    currentPack = [...midStagePack];
+    deckLength = currentPack.length / 2;
+
+    startGame();
+}
+
+function selectLastPack() {
+    currentPack = [...lastStagePack];
+    deckLength = currentPack.length / 2;
+
+    startGame();
+}
+
 // Event Listeners
-elResetButton.addEventListener('click', startGame);
+getElement('first-stage-pack').addEventListener('click', selectFirstPack);
+getElement('mid-stage-pack').addEventListener('click', selectMidPack);
+getElement('last-stage-pack').addEventListener('click', selectLastPack);
