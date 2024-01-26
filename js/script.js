@@ -65,6 +65,8 @@ function popCards() {
         return handleGameOver();
     }
 
+    resetCardsAnimations();
+
     yourCard = yourDeck.pop();
     opponentCard = opponentDeck.pop();
 
@@ -72,6 +74,13 @@ function popCards() {
     updateImgs();
     updateNameAndType();
     updateStatsButtons();
+}
+
+function resetCardsAnimations() {
+    document.getElementById('your-current-card').classList.remove('shake');
+    document.getElementById('your-current-card').classList.remove('fade');
+    document.getElementById('opponent-current-card').classList.remove('fade');
+    document.getElementById('opponent-current-card').classList.remove('shake');
 }
 
 function updateDecksLength() {
@@ -136,7 +145,7 @@ function chooseStat(e) {
     revealOpponent();
     highlightStats(chosenStat);
     compareStats(chosenStat);
-    setTimeout(popCards, 2500);
+
 }
 
 
@@ -175,25 +184,60 @@ function compareStats(chosenStat) {
     const typeMultiplier = calculateTypeMultiplier(yourCard.type, opponentCard.type);
 
     if (yourValueWithMultiplier > opponentValue) {
+        document.getElementById('your-current-card').classList.add('shake');
+        document.getElementById('opponent-current-card').classList.add('fade');
+        yourDeck.unshift(yourCard, opponentCard);
+    }
+    else if (yourValueWithMultiplier < opponentValue) {
+        document.getElementById('your-current-card').classList.add('fade');
+        document.getElementById('opponent-current-card').classList.add('shake');
+        opponentDeck.unshift(yourCard, opponentCard);
+    }
+
+    updateChosenStatWithMultiplier(chosenStat, yourValue, yourValueWithMultiplier, typeMultiplier);
+
+
+    if (yourValueWithMultiplier > opponentValue) {
         yourDeck.unshift(yourCard, opponentCard);
     }
     else if (yourValueWithMultiplier < opponentValue) {
         opponentDeck.unshift(yourCard, opponentCard);
     }
 
-    updateChosenStatWithMultiplier(chosenStat, yourValue, yourValueWithMultiplier, typeMultiplier);
+
+    setTimeout(applyCardsAnimations(yourValueWithMultiplier, opponentValue), 2000);
+    setTimeout(popCards, 4000);
 }
 
 function updateChosenStatWithMultiplier(chosenStat, oldValue, newValue, typeMultiplier) {
+    
     const elChosenStat = elYourOptions.querySelector(`#${chosenStat}`);
-    elChosenStat.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
+    if (typeMultiplier < 1 || typeMultiplier > 1) {
+        elChosenStat.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
+    }
 
+    applyStatAnimation(elChosenStat, typeMultiplier);
+}
+
+function applyStatAnimation(elChosenStat, typeMultiplier) {
     if (typeMultiplier > 1) {
         elChosenStat.classList.add('stat-increased');
     } else if (typeMultiplier < 1) {
         elChosenStat.classList.add('stat-reduced');
     }
 }
+
+function applyCardsAnimations(yourValue, opponentValue) {
+    if (yourValue > opponentValue) {
+        document.getElementById('your-current-card').classList.add('shake');
+        document.getElementById('opponent-current-card').classList.add('fade');
+    }
+    else if (yourValue < opponentValue) {
+        document.getElementById('your-current-card').classList.add('fade');
+        document.getElementById('opponent-current-card').classList.add('shake');
+    }
+}
+
 
 // Game Over Handling
 function handleGameOver() {

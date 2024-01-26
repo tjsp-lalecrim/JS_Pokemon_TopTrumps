@@ -18,12 +18,12 @@ body {
     display: none;
     align-items: center;
     justify-content: center;
-    gap:100px;
+    gap: 100px;
     font-size: 1.5rem;
     color: #d9d9e3;
 }
 
-.score span{
+.score span {
     text-align: center;
 }
 
@@ -39,7 +39,7 @@ body {
     padding: 10px;
 }
 
- .card {
+.card {
     width: 256px;
     height: 450px;
     display: flex;
@@ -49,6 +49,15 @@ body {
     border-radius: 10px;
     background: #f7f7f8;
 }
+
+.card.shake {
+    animation: shake_horizontal 0.5s ease-in-out;
+}
+
+.card.fade {
+    animation: fade_in 2s ease-in forwards;
+}
+
 
 .card img {
     width: 256px;
@@ -129,7 +138,40 @@ body {
     border-radius: 10px;
 }
 
+@keyframes shake_horizontal {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-3px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fade_in {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
 @media screen and (max-width: 600px) {
+
     .table,
     .score {
         flex-direction: column;
