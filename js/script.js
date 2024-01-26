@@ -36,7 +36,6 @@ let opponentValue = 0;
 function startGame() {
     hideElements('.menu');
     showElement('table');
-    showElement('score');
     resetVariables();
     mountDecks();
 }
@@ -235,7 +234,7 @@ function applyCardsAnimations(yourStatValue, opponentStatValue) {
 // Game Over Handling
 function handleGameOver() {
     updateDecksLength();
-    hideElements('.score', '.table');
+    hideElements('.table');
     showElement('menu');
     const elResultMessage = getElement('result-message');
 

@@ -13,20 +13,6 @@ body {
     background: #343541;
 }
 
-.score {
-    width: 100%;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 100px;
-    font-size: 1.5rem;
-    color: #d9d9e3;
-}
-
-.score span {
-    text-align: center;
-}
-
 .table {
     width: 100%;
     display: none;
@@ -35,6 +21,7 @@ body {
 }
 
 .slider {
+    max-width: 150px;
     border: 1px solid #ccc;
     color: #ccc;
     padding: 10px;
