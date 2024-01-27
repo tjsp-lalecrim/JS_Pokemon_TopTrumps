@@ -66,9 +66,11 @@ function popCards() {
         return handleGameOver();
     }
 
+
     yourCard = yourDeck.pop();
     opponentCard = opponentDeck.pop();
 
+    hideNextTurnButton();
     resetLog();
     addLog('Choose a stat');
     updateDecksLength();
@@ -76,6 +78,14 @@ function popCards() {
     updateImgs();
     updateNameAndType();
     updateStatsButtons();
+}
+
+function hideNextTurnButton() {
+    getElement('next-turn').style.visibility = 'hidden';
+}
+
+function showNextTurnButton() {
+    getElement('next-turn').style.visibility = 'visible';
 }
 
 function resetCardsAnimations() {
@@ -224,7 +234,7 @@ function addCurrentCardsToWinner(yourStatValue, opponentStatValue) {
         opponentDeck.unshift(opponentCard);
     }
 
-    setTimeout(popCards, 1000);
+    setTimeout(showNextTurnButton(), 1000);
 }
 
 function updateChosenStatValue(chosenStat, oldValue, newValue, typeValue) {
@@ -295,14 +305,12 @@ function selectPack(pack) {
 }
 
 // Event Listeners
-getElement('first-stage-pack').addEventListener('click', function () {
-    selectPack(firstStagePack);
-});
+getElement('first-stage-pack').addEventListener('click', () => selectPack(firstStagePack));
 
-getElement('mid-stage-pack').addEventListener('click', function () {
-    selectPack(midStagePack);
-});
+getElement('mid-stage-pack').addEventListener('click', () => selectPack(midStagePack));
 
-getElement('last-stage-pack').addEventListener('click', function () {
-    selectPack(lastStagePack);
-});
+getElement('last-stage-pack').addEventListener('click', () => selectPack(lastStagePack));
+
+getElement('next-turn').addEventListener('click', () => popCards());
+
+

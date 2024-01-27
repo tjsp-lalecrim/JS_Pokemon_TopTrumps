@@ -15,29 +15,40 @@
 <body>
 
     <div id="table" class="table">
-        <div class="col">
-            <span>Remaining Cards: <span id="your-cards"></span></span>
+        <div class="row">
+            <div class="col">
+                <span id="your-cards"></span>
+            </div>
+            <div class="col">
+                <span>Remaining Cards</span>
+            </div>
+            <div class="col">
+                <span id="opponent-cards"> </span>
+            </div>
         </div>
-        <div id="your-current-card" class="card">
-            <span class="pokemon-label">
-                <span id="your-label"></span>
-                <img id="your-type" src="" alt="Your Type">
-            </span>
-            <img id="your-img" src="" alt="Pokemon Card">
-            <div id="your-options" class="stat-options"></div>
+        <div class="row">
+            <div id="your-current-card" class="card">
+                <span class="pokemon-label">
+                    <span id="your-label"></span>
+                    <img id="your-type" src="" alt="Your Type">
+                </span>
+                <img id="your-img" src="" alt="Pokemon Card">
+                <div id="your-options" class="stat-options"></div>
+            </div>
+            <div id="game-log" class="col">
+            </div>
+            <div id="opponent-current-card" class="card">
+                <span class="pokemon-label">
+                    <span id="opponent-label"></span>
+                    <img id="opponent-type" src="" alt="Opponent Type">
+                </span>
+                <img id="opponent-img" src="" alt="Pokemon Card">
+                <div id="opponent-options" class="stat-options"></div>
+            </div>
+
         </div>
-        <div id="game-log" class="col">
-        </div>
-        <div id="opponent-current-card" class="card">
-            <span class="pokemon-label">
-                <span id="opponent-label"></span>
-                <img id="opponent-type" src="" alt="Opponent Type">
-            </span>
-            <img id="opponent-img" src="" alt="Pokemon Card">
-            <div id="opponent-options" class="stat-options"></div>
-        </div>
-        <div class="col">
-            <span>Remaining Cards: <span id="opponent-cards"> </span></span>
+        <div class="row">
+            <button id="next-turn">Next</button>
         </div>
     </div>
     <div id="menu" class="menu">
