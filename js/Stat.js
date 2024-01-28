@@ -1,12 +1,12 @@
-const stats = ['HP', 'Attack', 'Defense', 'Special_Attack', 'Special_Defense', 'Speed'];
+const stats = ['HP', 'Attack', 'Defense', 'SpecialAttack', 'SpecialDefense', 'Speed'];
 
 function getStatValue(card, stat) {
     const statProperty = {
         'HP': 'hp',
         'Attack': 'attack',
         'Defense': 'defense',
-        'Special_Attack': 'specialAttack',
-        'Special_Defense': 'specialDefense',
+        'SpecialAttack': 'specialAttack',
+        'SpecialDefense': 'specialDefense',
         'Speed': 'speed'
     };
 
@@ -25,9 +25,9 @@ function calculateStatMultiplier(offensiveCard, defensiveCard, stat) {
     }
     const statValue = getStatValue(offensiveCard, stat);
     let statMultiplier = 1;
-    if (stat === 'Attack' || stat === 'Special_Attack') {
+    if (stat === 'Attack' || stat === 'SpecialAttack') {
         statMultiplier = calculateTypeMultiplier(offensiveCard.type, defensiveCard.type);
-    } else if (stat === 'Defense' || stat === 'Special_Defense') {
+    } else if (stat === 'Defense' || stat === 'SpecialDefense') {
         statMultiplier = 1/calculateTypeMultiplier(defensiveCard.type, offensiveCard.type);
     }
 
@@ -39,8 +39,8 @@ function getOpponentStat(selectedStat) {
         'HP': 'HP',
         'Attack': 'Defense',
         'Defense': 'Attack',
-        'Special_Attack': 'Special_Defense',
-        'Special_Defense': 'Special_Attack',
+        'SpecialAttack': 'SpecialDefense',
+        'SpecialDefense': 'SpecialAttack',
         'Speed': 'Speed'
     };
 

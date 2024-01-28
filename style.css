@@ -25,21 +25,19 @@ body {
 .table .row {
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 .row .col {
-    width: 250px;
-    height: auto;
+    width: 256px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     color: #ccc;
-    padding: 10px;
-    margin: 10px;
     text-align: center;
 }
 
-.card {
+.row .card {
     width: 256px;
     height: 450px;
     display: flex;
@@ -228,6 +226,10 @@ body {
     .table {
         flex-direction: column;
         gap: 10px;
+    }
+
+    .table .row {
+        flex-direction: column;
     }
 
     .table .card {

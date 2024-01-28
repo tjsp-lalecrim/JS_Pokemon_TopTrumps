@@ -217,32 +217,32 @@ function compareStats() {
     opponentValue = getStatValue(opponentCard, opponentStat);
 
     updateCompareStatsLog();
-    updateChosenStatValue(yourStat, yourValue, yourValueWithMultiplier, typeMultiplier);
+    updateChosenStatValue(yourStat, yourValue, yourValueWithMultiplier);
 }
 
 function updateCompareStatsLog() {
-    addLog(`${yourStat} VS. ${opponentStat}`);
-    addLog(`${yourValue} VS. ${opponentValue}`);
-    if (yourValueWithMultiplier < yourValue) {
+    if (yourValue === yourValueWithMultiplier) {
+        addLog(`${yourStat} VS. ${opponentStat}`);
+        addLog(`${yourValue} VS. ${opponentValue}`);
+    } else if (yourValueWithMultiplier === 0) {
+        addLog(`${yourCard.type} ${yourStat} is cancelled against ${opponentCard.type} ${opponentStat}`);
+        addLog(`${yourStat} VS. ${opponentStat}`);
+        addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
+    } else if (yourValueWithMultiplier < yourValue) {
         addLog(`${yourCard.type} ${yourStat} is reduced against ${opponentCard.type} ${opponentStat}`);
         addLog(`${yourStat} VS. ${opponentStat}`);
         addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
     } else if (yourValueWithMultiplier > yourValue) {
-        addLog(`"${yourCard.type}" ${yourStat} is increased against "${opponentCard.type}" ${opponentStat}`);
-        addLog(`${yourStat} VS. ${opponentStat}`);
-        addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
-    } else if (yourValueWithMultiplier === 0) {
-        addLog(`"${yourCard.type}" ${yourStat} is cancelled against "${opponentCard.type}" ${opponentStat}`);
+        addLog(`${yourCard.type} ${yourStat} is increased against ${opponentCard.type} ${opponentStat}`);
         addLog(`${yourStat} VS. ${opponentStat}`);
         addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
     }
+
     if (yourValueWithMultiplier > opponentValue) {
         addLog(`You win!`);
-    }
-    else if (yourValueWithMultiplier < opponentValue) {
+    } else if (yourValueWithMultiplier < opponentValue) {
         addLog(`You lose!`);
-    }
-    else {
+    } else {
         addLog(`Draw!`);
     }
 }
@@ -260,10 +260,10 @@ function addCurrentCardsToWinner(yourStatValue, opponentStatValue) {
     setTimeout(showNextTurnButton(), 1000);
 }
 
-function updateChosenStatValue(chosenStat, oldValue, newValue, typeValue) {
+function updateChosenStatValue(chosenStat, oldValue, newValue) {
     const chosenStatElement = getElement(chosenStat);
 
-    if (typeValue !== 1) {
+    if (oldValue != newValue) {
         chosenStatElement.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
     }
 
