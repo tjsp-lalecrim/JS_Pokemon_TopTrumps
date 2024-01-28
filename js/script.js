@@ -267,15 +267,15 @@ function updateChosenStatValue(chosenStat, oldValue, newValue, typeValue) {
         chosenStatElement.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
     }
 
-    applyStatAnimation(chosenStat, typeValue);
+    applyStatAnimation(chosenStat);
 }
 
-function applyStatAnimation(chosenStat, typeValue) {
+function applyStatAnimation(chosenStat) {
     const chosenStatElement = getElement(chosenStat);
 
-    if (typeValue > 1) {
+    if (yourValue < yourValueWithMultiplier) {
         chosenStatElement.classList.add('stat-increased');
-    } else if (typeValue < 1) {
+    } else if (yourValue > yourValueWithMultiplier) {
         chosenStatElement.classList.add('stat-reduced');
     }
 
