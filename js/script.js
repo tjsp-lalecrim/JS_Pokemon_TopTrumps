@@ -23,6 +23,7 @@ const elements = {
     opponentStatValue: getQuerySelector('#opponent-stat-value'),
     typeMultiplier: getQuerySelector('#type-multiplier'),
     result: getQuerySelector('#result'),
+    nextTurnButton: getElement('next-turn')
 };
 
 // Global variables
@@ -89,11 +90,11 @@ function popCards() {
 }
 
 function hideNextTurnButton() {
-    getElement('next-turn').style.visibility = 'hidden';
+    elements.nextTurnButton.style.visibility = 'hidden';
 }
 
 function showNextTurnButton() {
-    getElement('next-turn').style.visibility = 'visible';
+    elements.nextTurnButton.style.visibility = 'visible';
 }
 
 function resetCardsAnimations() {
@@ -195,6 +196,7 @@ function revealOpponent() {
 
 function _revealOpponentStats() {
     elements.opponentOptions.innerHTML = '';
+    elements.opponentTypeName.innerText = opponentCard.type;
 
     stats.forEach(stat => {
         const opponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, true, false);
@@ -219,7 +221,6 @@ function compareStats() {
 }
 
 function updateCompareStatsLog() {
-  
     addLog(`${yourStat} VS. ${opponentStat}`);
     addLog(`${yourValue} VS. ${opponentValue}`);
     if (yourValueWithMultiplier < yourValue) {
@@ -334,5 +335,3 @@ getElement('mid-stage-pack').addEventListener('click', () => selectPack(midStage
 getElement('last-stage-pack').addEventListener('click', () => selectPack(lastStagePack));
 
 getElement('next-turn').addEventListener('click', () => popCards());
-
-
