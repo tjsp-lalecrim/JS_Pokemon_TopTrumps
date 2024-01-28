@@ -59,7 +59,6 @@ const firstStagePack = [
     new PokemonCard("Koffing", "poison", 40, 65, 95, 60, 45, 35),
     new PokemonCard("Rhyhorn", "ground", 80, 85, 95, 30, 30, 25),
     new PokemonCard("Horsea", "water", 30, 40, 70, 70, 25, 60),
-    new PokemonCard("Seadra", "water", 55, 65, 95, 95, 45, 85),
     new PokemonCard("Goldeen", "water", 45, 67, 60, 35, 50, 63),
     new PokemonCard("Staryu", "water", 30, 45, 55, 70, 55, 85),
     new PokemonCard("Magikarp", "water", 20, 10, 55, 15, 20, 80),
