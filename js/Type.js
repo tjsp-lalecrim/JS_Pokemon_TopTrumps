@@ -30,24 +30,24 @@ function calculateTypeMultiplier(offensiveType, defensiveType) {
 
 function getHintByType(type) {
     const hintChart = {
-        'Normal': ['Normal', 'Flying', 'Dragon', 'Fairy', 'Steel'],
-        'Fire': ['Fire'],
+        'Normal': ['Normal', 'Flying', 'Fairy'],
+        'Fire': ['Fire', 'Dragon'],
         'Water': ['Water', 'Ice'],
         'Grass': ['Grass', 'Bug', 'Poison'],
-        'Electric': ['Electric'],
+        'Electric': ['Electric', 'Steel'],
         'Ice': ['Water', 'Ice'],
         'Fighting': ['Fighting', 'Ground', 'Rock'],
         'Poison': ['Grass', 'Bug', 'Poison'],
         'Ground': ['Fighting', 'Ground', 'Rock'],
-        'Flying': ['Normal', 'Flying', 'Dragon', 'Fairy', 'Steel'],
+        'Flying': ['Normal', 'Flying', 'Fairy'],
         'Psychic': ['Psychic', 'Ghost', 'Dark'],
         'Bug': ['Grass', 'Bug', 'Poison'],
         'Rock': ['Fighting', 'Ground', 'Rock'],
-        'Ghost':  ['Psychic', 'Ghost', 'Dark'],
-        'Dragon': ['Normal', 'Flying', 'Dragon', 'Fairy', 'Steel'],
-        'Dark':  ['Psychic', 'Ghost', 'Dark'],
-        'Steel': ['Normal', 'Flying', 'Dragon', 'Fairy', 'Steel'],
-        'Fairy': ['Normal', 'Flying', 'Dragon', 'Fairy', 'Steel'],
+        'Ghost': ['Psychic', 'Ghost', 'Dark'],
+        'Dragon': ['Fire', 'Dragon'],
+        'Dark': ['Psychic', 'Ghost', 'Dark'],
+        'Steel': ['Electric', 'Steel'],
+        'Fairy': ['Normal', 'Flying', 'Fairy'],
     };
 
     return hintChart[type] || [];
