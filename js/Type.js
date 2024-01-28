@@ -1,6 +1,6 @@
 function calculateTypeMultiplier(offensiveType, defensiveType) {
     if (!offensiveType || !defensiveType) {
-        console.error(!offensiveType ? 'Missing offensiveType' :'Missing defensiveType');
+        console.error(!offensiveType ? 'Missing offensiveType' : 'Missing defensiveType');
         return 1;
     }
 
@@ -26,4 +26,29 @@ function calculateTypeMultiplier(offensiveType, defensiveType) {
     };
 
     return typeChart[offensiveType][defensiveType] ?? 1;
+}
+
+function getHintByType(type) {
+    const hintChart = {
+        'normal': ['normal', 'flying', 'dragon', 'fairy', 'steel'],
+        'fire': ['fire'],
+        'water': ['water', 'ice'],
+        'grass': ['grass', 'bug', 'poison'],
+        'electric': ['electric'],
+        'ice': ['water', 'ice'],
+        'fighting': ['fighting', 'ground', 'rock'],
+        'poison': ['grass', 'bug', 'poison'],
+        'ground': ['fighting', 'ground', 'rock'],
+        'flying': ['normal', 'flying', 'dragon', 'fairy', 'steel'],
+        'psychic': ['psychic', 'ghost', 'dark'],
+        'bug': ['grass', 'bug', 'poison'],
+        'rock': ['fighting', 'ground', 'rock'],
+        'ghost':  ['psychic', 'ghost', 'dark'],
+        'dragon': ['normal', 'flying', 'dragon', 'fairy', 'steel'],
+        'dark':  ['psychic', 'ghost', 'dark'],
+        'steel': ['normal', 'flying', 'dragon', 'fairy', 'steel'],
+        'fairy': ['normal', 'flying', 'dragon', 'fairy', 'steel'],
+    };
+
+    return hintChart[type] || [];
 }

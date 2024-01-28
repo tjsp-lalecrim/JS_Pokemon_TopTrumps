@@ -11,7 +11,9 @@ const elements = {
     yourName: getQuerySelector('#your-label'),
     opponentName: getQuerySelector('#opponent-label'),
     yourType: getQuerySelector('#your-type'),
+    yourTypeName: getQuerySelector('#your-type-name'),
     opponentType: getQuerySelector('#opponent-type'),
+    opponentTypeName: getQuerySelector('#opponent-type-name'),
     yourImg: getElement('your-img'),
     opponentImg: getElement('opponent-img'),
     yourOptions: getQuerySelector('#your-options'),
@@ -30,9 +32,11 @@ let yourDeck = [];
 let opponentDeck = [];
 let yourCard = null;
 let opponentCard = null;
+let yourStat = '';
 let yourValue = 0;
 let typeMultiplier = 1;
 let yourValueWithMultiplier = 0;
+let opponentStat = '';
 let opponentValue = 0;
 
 // Game Initialization
@@ -48,6 +52,12 @@ function resetVariables() {
     opponentDeck = [];
     yourCard = null;
     opponentCard = null;
+    yourStat = '';
+    yourValue = 0;
+    yourValueWithMultiplier = 0;
+    typeMultiplier = 1;
+    opponentStat = '';
+    opponentValue = '';
 }
 
 // Deck Handling
@@ -66,13 +76,11 @@ function popCards() {
         return handleGameOver();
     }
 
-
     yourCard = yourDeck.pop();
     opponentCard = opponentDeck.pop();
 
     hideNextTurnButton();
     resetLog();
-    addLog('Choose a stat');
     updateDecksLength();
     resetCardsAnimations();
     updateImgs();
@@ -116,13 +124,17 @@ function updateImgs() {
 }
 
 function updateNameAndType() {
+    const opponentTypeHint = getHintByType(opponentCard.type).join(' or ');
+
     elements.yourName.innerText = yourCard.name;
     elements.yourType.src = `img/types/${yourCard.type}.png`;
     elements.yourType.alt = `${yourCard.type} Type`;
+    elements.yourTypeName.innerText = `${yourCard.type}`;
 
     elements.opponentName.innerText = '???';
     elements.opponentType.src = `img/types/${opponentCard.type}.png`;
     elements.opponentType.alt = `${opponentCard.type} Type`;
+    elements.opponentTypeName.innerText = `${opponentTypeHint}`;
 }
 
 function updateStatsButtons() {
@@ -161,12 +173,13 @@ function createStatButton(stat, id, card, showStatValue, isClickable) {
 
 // Gameplay Functions
 function chooseStat(e) {
-    const chosenStat = e.target.id;
+    yourStat = e.target.id;
+    opponentStat = getOpponentStat(yourStat);
 
     disableYourButtons();
     revealOpponent();
-    highlightStats(chosenStat);
-    compareStats(chosenStat);
+    highlightStats();
+    compareStats();
 }
 
 function disableYourButtons() {
@@ -189,28 +202,39 @@ function _revealOpponentStats() {
     });
 }
 
-function highlightStats(chosenStat) {
-    [chosenStat, `opp-${chosenStat}`].forEach(id => {
+function highlightStats() {
+    [yourStat, `opp-${opponentStat}`].forEach(id => {
         getElement(id).classList.add('active');
     });
 }
 
-function compareStats(chosenStat) {
-    yourValue = getStatValue(yourCard, chosenStat);
+function compareStats() {
+    yourValue = getStatValue(yourCard, yourStat);
     typeMultiplier = calculateTypeMultiplier(yourCard.type, opponentCard.type);
-    yourValueWithMultiplier = calculateStatMultiplier(yourCard, opponentCard, chosenStat);
-    opponentValue = getStatValue(opponentCard, chosenStat);
+    yourValueWithMultiplier = calculateStatMultiplier(yourCard, opponentCard, yourStat);
+    opponentValue = getStatValue(opponentCard, opponentStat);
 
-    addLog(`${chosenStat} => ${yourValue} VS. ${opponentValue}`);
-    addLog(`Types =>"${yourCard.type}" VS. "${opponentCard.type}"`);
-    if (typeMultiplier === 0.5) {
-        addLog(`${yourCard.type} type is reduced by half against ${opponentCard.type} type`);
-        addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
-    } else if (typeMultiplier === 2) {
-        addLog(`"${yourCard.type}" type is doubled against "${opponentCard.type}" type`);
-        addLog(`${chosenStat} => ${yourValueWithMultiplier} VS. ${opponentValue}`);
+    updateCompareStatsLog();
+    updateChosenStatValue(yourStat, yourValue, yourValueWithMultiplier, typeMultiplier);
+}
+
+function updateCompareStatsLog() {
+  
+    addLog(`${yourStat} VS. ${opponentStat}`);
+    addLog(`${yourValue} VS. ${opponentValue}`);
+    if (yourValueWithMultiplier < yourValue) {
+        addLog(`${yourCard.type} ${yourStat} is reduced against ${opponentCard.type} ${opponentStat}`);
+        addLog(`${yourStat} VS. ${opponentStat}`);
+        addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
+    } else if (yourValueWithMultiplier > yourValue) {
+        addLog(`"${yourCard.type}" ${yourStat} is increased against "${opponentCard.type}" ${opponentStat}`);
+        addLog(`${yourStat} VS. ${opponentStat}`);
+        addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
+    } else if (yourValueWithMultiplier === 0) {
+        addLog(`"${yourCard.type}" ${yourStat} is cancelled against "${opponentCard.type}" ${opponentStat}`);
+        addLog(`${yourStat} VS. ${opponentStat}`);
+        addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
     }
-
     if (yourValueWithMultiplier > opponentValue) {
         addLog(`You win!`);
     }
@@ -220,8 +244,6 @@ function compareStats(chosenStat) {
     else {
         addLog(`Draw!`);
     }
-
-    updateChosenStatValue(chosenStat, yourValue, yourValueWithMultiplier, typeMultiplier);
 }
 
 function addCurrentCardsToWinner(yourStatValue, opponentStatValue) {

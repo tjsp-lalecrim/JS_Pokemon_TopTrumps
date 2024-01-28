@@ -28,7 +28,7 @@ body {
 }
 
 .row .col {
-    width: 225px;
+    width: 250px;
     height: auto;
     display: flex;
     flex-direction: column;
@@ -168,6 +168,17 @@ body {
     margin: 10px;
     padding: 10px;
     outline: none;
+}
+
+.rules{
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+    padding: 10px;
+    color: #ccc;
+    font-size: 15px;
 }
 
 @keyframes shake_horizontal {

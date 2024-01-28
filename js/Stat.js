@@ -23,8 +23,26 @@ function calculateStatMultiplier(offensiveCard, defensiveCard, stat) {
         console.error('Missing offensiveCard or defensiveCard or stat');
         return null;
     }
-
     const statValue = getStatValue(offensiveCard, stat);
-    const statMultiplier = calculateTypeMultiplier(offensiveCard.type, defensiveCard.type);
+    let statMultiplier = 1;
+    if (stat === 'Attack' || stat === 'Special_Attack') {
+        statMultiplier = calculateTypeMultiplier(offensiveCard.type, defensiveCard.type);
+    } else if (stat === 'Defense' || stat === 'Special_Defense') {
+        statMultiplier = 1/calculateTypeMultiplier(defensiveCard.type, offensiveCard.type);
+    }
+
     return Number.parseInt(statValue * statMultiplier);
+}
+
+function getOpponentStat(selectedStat) {
+    const opponentStat = {
+        'HP': 'HP',
+        'Attack': 'Defense',
+        'Defense': 'Attack',
+        'Special_Attack': 'Special_Defense',
+        'Special_Defense': 'Special_Attack',
+        'Speed': 'Speed'
+    };
+
+    return opponentStat[selectedStat] || '';
 }
