@@ -23,7 +23,7 @@ const elements = {
     opponentStatValue: getQuerySelector('#opponent-stat-value'),
     typeMultiplier: getQuerySelector('#type-multiplier'),
     result: getQuerySelector('#result'),
-    nextTurnButton: getElement('next-turn')
+    continueButton: getElement('next-turn')
 };
 
 // Global variables
@@ -81,7 +81,7 @@ function popCards() {
     yourCard = yourDeck.pop();
     opponentCard = opponentDeck.pop();
 
-    hideNextTurnButton();
+    hideContinueButton();
     resetLog();
     updateDecksLength();
     resetCardsAnimations();
@@ -91,16 +91,16 @@ function popCards() {
     addLog(yourTurn ? 'Your turn' : 'Opponent turn');
 
     if (!yourTurn) {
-        setTimeout(() => opponentChooseStat(), 2000);
+        setTimeout(opponentChooseStat, 2000);
     }
 }
 
-function hideNextTurnButton() {
-    elements.nextTurnButton.style.visibility = 'hidden';
+function hideContinueButton() {
+    elements.continueButton.style.visibility = 'hidden';
 }
 
-function showNextTurnButton() {
-    elements.nextTurnButton.style.visibility = 'visible';
+function showContinueButton() {
+    elements.continueButton.style.visibility = 'visible';
 }
 
 function resetCardsAnimations() {
@@ -219,8 +219,6 @@ function opponentChooseStat() {
     compareStats();
 }
 
-
-
 function disableYourButtons() {
     const yourButtons = elements.yourOptions.querySelectorAll('button');
     yourButtons.forEach(button => button.style.pointerEvents = 'none');
@@ -315,7 +313,7 @@ function addCurrentCardsToWinner(statValue, opponentStatValue) {
         opponentDeck.unshift(opponentCard);
     }
 
-    setTimeout(showNextTurnButton(), 1000);
+    setTimeout(showContinueButton, 1000);
 }
 
 function updateChosenStatValue(chosenStat, oldValue, newValue) {

@@ -99,7 +99,6 @@ body {
     background: #d9d9e3;
 }
 
-.stat-options button:hover,
 .stat-options button.active {
     background: #FFF8DC;
     font-weight: 700;
