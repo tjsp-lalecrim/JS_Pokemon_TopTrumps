@@ -39,6 +39,7 @@ let typeMultiplier = 1;
 let yourValueWithMultiplier = 0;
 let opponentStat = '';
 let opponentValue = 0;
+let yourTurn = true;
 
 // Game Initialization
 function startGame() {
@@ -87,6 +88,11 @@ function popCards() {
     updateImgs();
     updateNameAndType();
     updateStatsButtons();
+    addLog(yourTurn ? 'Your turn' : 'Opponent turn');
+
+    if (!yourTurn) {
+        setTimeout(() => opponentChooseStat(), 2000);
+    }
 }
 
 function hideNextTurnButton() {
@@ -120,22 +126,43 @@ function updateDecksLength() {
 }
 
 function updateImgs() {
-    elements.yourImg.src = `img/pokemons/${yourCard.name}.png`;
-    elements.opponentImg.src = 'img/pokeball.png';
+    if (yourTurn) {
+        elements.yourImg.src = `img/pokemons/${yourCard.name}.png`;
+        elements.opponentImg.src = 'img/pokeball.png';
+    } else {
+        elements.yourImg.src = 'img/pokeball.png';
+        elements.opponentImg.src = `img/pokemons/${opponentCard.name}.png`;
+    }
 }
 
 function updateNameAndType() {
-    const opponentTypeHint = getHintByType(opponentCard.type).join(' or ');
+    let typeHint;
 
-    elements.yourName.innerText = yourCard.name;
-    elements.yourType.src = `img/types/${yourCard.type}.png`;
-    elements.yourType.alt = `${yourCard.type} Type`;
-    elements.yourTypeName.innerText = `${yourCard.type}`;
+    if (yourTurn) {
+        typeHint = getHintByType(opponentCard.type).join(' or ');
 
-    elements.opponentName.innerText = '???';
-    elements.opponentType.src = `img/types/${opponentCard.type}.png`;
-    elements.opponentType.alt = `${opponentCard.type} Type`;
-    elements.opponentTypeName.innerText = `${opponentTypeHint}`;
+        elements.yourName.innerText = yourCard.name;
+        elements.yourType.src = `img/types/${yourCard.type}.png`;
+        elements.yourType.alt = `${yourCard.type} Type`;
+        elements.yourTypeName.innerText = `${yourCard.type}`;
+
+        elements.opponentName.innerText = '???';
+        elements.opponentType.src = `img/types/${opponentCard.type}.png`;
+        elements.opponentType.alt = `${opponentCard.type} Type`;
+        elements.opponentTypeName.innerText = `${typeHint}`;
+    } else {
+        typeHint = getHintByType(yourCard.type).join(' or ');
+
+        elements.yourName.innerText = '???';
+        elements.yourType.src = `img/types/${opponentCard.type}.png`;
+        elements.yourType.alt = `${opponentCard.type} Type`;
+        elements.yourTypeName.innerText = `${typeHint}`;
+        elements.opponentName.innerText = opponentCard.name;
+
+        elements.opponentName.src = `img/types/${opponentCard.type}.png`;
+        elements.opponentName.alt = `${opponentCard.type} Type`;
+        elements.opponentName.innerText = `${opponentCard.type}`;
+    }
 }
 
 function updateStatsButtons() {
@@ -143,10 +170,10 @@ function updateStatsButtons() {
     elements.opponentOptions.innerHTML = '';
 
     stats.forEach(stat => {
-        const yourStatButton = createStatButton(stat, `${stat}`, yourCard, true, true);
+        const yourStatButton = createStatButton(stat, `${stat}`, yourCard, yourTurn, yourTurn);
         elements.yourOptions.append(yourStatButton);
 
-        const opponentStatButton = createStatButton(stat, `opp-${stat}`, opponentCard, false, false);
+        const opponentStatButton = createStatButton(stat, `opp-${stat}`, opponentCard, !yourTurn, false);
         elements.opponentOptions.append(opponentStatButton);
     });
 }
@@ -178,30 +205,57 @@ function chooseStat(e) {
     opponentStat = getOpponentStat(yourStat);
 
     disableYourButtons();
-    revealOpponent();
+    revealCard();
     highlightStats();
     compareStats();
 }
+
+function opponentChooseStat() {
+    opponentStat = getHighestStat(opponentCard);
+    yourStat = getOpponentStat(opponentStat);
+
+    revealCard();
+    highlightStats();
+    compareStats();
+}
+
+
 
 function disableYourButtons() {
     const yourButtons = elements.yourOptions.querySelectorAll('button');
     yourButtons.forEach(button => button.style.pointerEvents = 'none');
 }
 
-function revealOpponent() {
-    elements.opponentImg.src = `img/pokemons/${opponentCard.name}.png`;
-    elements.opponentName.innerText = opponentCard.name;
-    _revealOpponentStats();
+function revealCard() {
+    if (yourTurn) {
+        elements.opponentImg.src = `img/pokemons/${opponentCard.name}.png`;
+        elements.opponentName.innerText = opponentCard.name;
+    } else {
+        elements.yourImg.src = `img/pokemons/${yourCard.name}.png`;
+        elements.yourName.innerText = yourCard.name;
+    }
+
+    revealOpponentStats();
 }
 
-function _revealOpponentStats() {
-    elements.opponentOptions.innerHTML = '';
-    elements.opponentTypeName.innerText = opponentCard.type;
+function revealOpponentStats() {
+    if (yourTurn) {
+        elements.opponentOptions.innerHTML = '';
+        elements.opponentTypeName.innerText = opponentCard.type;
 
-    stats.forEach(stat => {
-        const opponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, true, false);
-        elements.opponentOptions.append(opponentStat);
-    });
+        stats.forEach(stat => {
+            const opponentStat = createStatButton(stat, `opp-${stat}`, opponentCard, true, false);
+            elements.opponentOptions.append(opponentStat);
+        });
+    } else {
+        elements.yourOptions.innerHTML = '';
+        elements.yourTypeName.innerText = yourCard.type;
+
+        stats.forEach(stat => {
+            const yourStat = createStatButton(stat, `${stat}`, yourCard, true, false);
+            elements.yourOptions.append(yourStat);
+        });
+    }
 }
 
 function highlightStats() {
@@ -221,6 +275,7 @@ function compareStats() {
 }
 
 function updateCompareStatsLog() {
+    // log stats values
     if (yourValue === yourValueWithMultiplier) {
         addLog(`${yourStat} VS. ${opponentStat}`);
         addLog(`${yourValue} VS. ${opponentValue}`);
@@ -238,6 +293,7 @@ function updateCompareStatsLog() {
         addLog(`${yourValueWithMultiplier} VS. ${opponentValue}`);
     }
 
+    // log result
     if (yourValueWithMultiplier > opponentValue) {
         addLog(`You win!`);
     } else if (yourValueWithMultiplier < opponentValue) {
@@ -247,11 +303,13 @@ function updateCompareStatsLog() {
     }
 }
 
-function addCurrentCardsToWinner(yourStatValue, opponentStatValue) {
-    if (yourStatValue > opponentStatValue) {
+function addCurrentCardsToWinner(statValue, opponentStatValue) {
+    if (statValue > opponentStatValue) {
         yourDeck.unshift(yourCard, opponentCard);
-    } else if (yourStatValue < opponentStatValue) {
+        yourTurn = true;
+    } else if (statValue < opponentStatValue) {
         opponentDeck.unshift(yourCard, opponentCard);
+        yourTurn = false;
     } else {
         yourDeck.unshift(yourCard);
         opponentDeck.unshift(opponentCard);
@@ -267,29 +325,29 @@ function updateChosenStatValue(chosenStat, oldValue, newValue) {
         chosenStatElement.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
     }
 
-    applyStatAnimation(chosenStat);
+    applyStatAnimation(chosenStat, oldValue, newValue, opponentValue);
 }
 
-function applyStatAnimation(chosenStat) {
+function applyStatAnimation(chosenStat, oldStatValue, newStatValue, opponentStatValue) {
     const chosenStatElement = getElement(chosenStat);
 
-    if (yourValue < yourValueWithMultiplier) {
+    if (oldStatValue < newStatValue) {
         chosenStatElement.classList.add('stat-increased');
-    } else if (yourValue > yourValueWithMultiplier) {
+    } else if (oldStatValue > newStatValue) {
         chosenStatElement.classList.add('stat-reduced');
     }
 
-    setTimeout(() => applyCardsAnimations(yourValueWithMultiplier, opponentValue), 1500);
+    setTimeout(() => applyCardsAnimations(newStatValue, opponentStatValue), 1500);
 }
 
-function applyCardsAnimations(yourStatValue, opponentStatValue) {
+function applyCardsAnimations(statValue, opponentStatValue) {
     const yourCardElement = getElement('your-current-card');
     const opponentCardElement = getElement('opponent-current-card');
 
-    if (yourStatValue > opponentStatValue) {
+    if (statValue > opponentStatValue) {
         yourCardElement.classList.add('shake');
         opponentCardElement.classList.add('fade');
-    } else if (yourStatValue < opponentStatValue) {
+    } else if (statValue < opponentStatValue) {
         yourCardElement.classList.add('fade');
         opponentCardElement.classList.add('shake');
     } else {
@@ -297,7 +355,7 @@ function applyCardsAnimations(yourStatValue, opponentStatValue) {
         opponentCardElement.classList.add('fade');
     }
 
-    setTimeout(() => addCurrentCardsToWinner(yourValueWithMultiplier, opponentStatValue), 1000);
+    setTimeout(() => addCurrentCardsToWinner(statValue, opponentStatValue), 1000);
 }
 
 // Game Over Handling
@@ -312,9 +370,7 @@ function handleGameOver() {
 
 // Display Handling
 function hideElements(...selectors) {
-    selectors.forEach(selector => {
-        getQuerySelector(selector).style.display = 'none';
-    });
+    selectors.forEach(selector => getQuerySelector(selector).style.display = 'none');
 }
 
 function showElement(selector) {
@@ -329,9 +385,6 @@ function selectPack(pack) {
 
 // Event Listeners
 getElement('first-stage-pack').addEventListener('click', () => selectPack(firstStagePack));
-
 getElement('mid-stage-pack').addEventListener('click', () => selectPack(midStagePack));
-
 getElement('last-stage-pack').addEventListener('click', () => selectPack(lastStagePack));
-
 getElement('next-turn').addEventListener('click', () => popCards());
