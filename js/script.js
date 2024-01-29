@@ -27,19 +27,19 @@ const elements = {
 };
 
 // Global variables
-let currentPack = [...lastStagePack];
-let deckLength = currentPack.length / 2;
+let currentPack = [];
+let deckLength = 0;
 let yourDeck = [];
 let opponentDeck = [];
 let yourCard = null;
 let opponentCard = null;
 let yourStat = '';
+let opponentStat = '';
 let yourValue = 0;
+let opponentValue = 0;
 let typeMultiplier = 1;
 let yourValueWithMultiplier = 0;
 let opponentValueWithMultiplier = 0;
-let opponentStat = '';
-let opponentValue = 0;
 let yourTurn = true;
 
 // Game Initialization
@@ -312,11 +312,11 @@ function updateCompareStatsLog() {
     }
 }
 
-function addCurrentCardsToWinner(statValue, opponentStatValue) {
-    if (statValue > opponentStatValue) {
+function addCurrentCardsToWinner() {
+    if (yourValueWithMultiplier > opponentValueWithMultiplier) {
         yourDeck.unshift(yourCard, opponentCard);
         yourTurn = true;
-    } else if (statValue < opponentStatValue) {
+    } else if (yourValueWithMultiplier < opponentValueWithMultiplier) {
         opponentDeck.unshift(yourCard, opponentCard);
         yourTurn = false;
     } else {
@@ -334,10 +334,10 @@ function updateChosenStatValue(chosenStat, oldValue, newValue) {
         chosenStatElement.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
     }
 
-    applyStatAnimation(chosenStat, oldValue, newValue, opponentValue);
+    applyStatAnimation(chosenStat, oldValue, newValue);
 }
 
-function applyStatAnimation(chosenStat, oldStatValue, newStatValue, opponentStatValue) {
+function applyStatAnimation(chosenStat, oldStatValue, newStatValue) {
     const chosenStatElement = getElement(chosenStat);
 
     if (oldStatValue < newStatValue) {
@@ -346,17 +346,17 @@ function applyStatAnimation(chosenStat, oldStatValue, newStatValue, opponentStat
         chosenStatElement.classList.add('stat-reduced');
     }
 
-    setTimeout(() => applyCardsAnimations(yourValueWithMultiplier, opponentValueWithMultiplier), 1500);
+    setTimeout(applyCardsAnimations, 1000);
 }
 
-function applyCardsAnimations(yourStatValue, opponentStatValue) {
+function applyCardsAnimations() {
     const yourCardElement = getElement('your-current-card');
     const opponentCardElement = getElement('opponent-current-card');
 
-    if (yourStatValue > opponentStatValue) {
+    if (yourValueWithMultiplier > opponentValueWithMultiplier) {
         yourCardElement.classList.add('shake');
         opponentCardElement.classList.add('fade');
-    } else if (yourStatValue < opponentStatValue) {
+    } else if (yourValueWithMultiplier < opponentValueWithMultiplier) {
         yourCardElement.classList.add('fade');
         opponentCardElement.classList.add('shake');
     } else {
@@ -364,7 +364,7 @@ function applyCardsAnimations(yourStatValue, opponentStatValue) {
         opponentCardElement.classList.add('fade');
     }
 
-    setTimeout(() => addCurrentCardsToWinner(yourStatValue, opponentStatValue), 1000);
+    setTimeout(addCurrentCardsToWinner, 1000);
 }
 
 // Game Over Handling
