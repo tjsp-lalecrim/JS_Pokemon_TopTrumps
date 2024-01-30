@@ -53,7 +53,7 @@ body {
 }
 
 .card.fade {
-    animation: fade_in 2s ease-in forwards;
+    animation: fade_in 1s ease-in forwards;
 }
 
 .card img {
@@ -206,7 +206,7 @@ body {
     }
 
     100% {
-        opacity: 0;
+        opacity: 0.25;
     }
 }
 
