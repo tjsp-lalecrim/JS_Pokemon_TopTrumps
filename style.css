@@ -220,7 +220,7 @@ body {
     }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 800px) {
     body {
         width: auto;
         height: auto;
@@ -239,6 +239,7 @@ body {
 
     .table .row {
         width: 100vw;
+        min-height: 50px;
         gap: 5px;
         flex-wrap: wrap;
         flex-direction: row;
@@ -261,7 +262,7 @@ body {
 
     .row .col-center {
         width: 50%;
-        max-width: 40vw;
+        max-width: 45vw;
     }
 
     .col #game-log span {
