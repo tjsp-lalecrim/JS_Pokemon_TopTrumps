@@ -56,12 +56,13 @@ function resetVariables() {
     yourCard = null;
     opponentCard = null;
     yourStat = '';
+    opponentStat = '';
     yourValue = 0;
+    opponentValue = 0;
+    typeMultiplier = 1;
     yourValueWithMultiplier = 0;
     opponentValueWithMultiplier = 0;
-    typeMultiplier = 1;
-    opponentStat = '';
-    opponentValue = '';
+    yourTurn = true;
 }
 
 // Deck Handling
