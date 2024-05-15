@@ -52,3 +52,29 @@ function getHintByType(type) {
 
     return hintChart[type] || [];
 }
+
+function writeTypeChartTable(typeChart) {
+    const table = document.getElementById('type-chart');
+    const types = Object.keys(typeChart);
+    
+    let html = '<tr><th></th>'; // Header row
+    
+    // Create header row
+    types.forEach(type => {
+        html += `<th>${type}</th>`;
+    });
+    html += '</tr>';
+    
+    // Create data rows
+    types.forEach(type1 => {
+        html += `<tr><td>${type1}</td>`;
+        types.forEach(type2 => {
+            html += `<td>${typeChart[type1][type2]}</td>`;
+        });
+        html += '</tr>';
+    });
+    
+    table.innerHTML = html;
+}
+
+writeTypeChartTable(typeChart);
