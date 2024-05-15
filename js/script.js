@@ -141,9 +141,9 @@ function updateImgs() {
 function updateNameAndType() {
     let typeHint;
 
-    elements.yourType.src = `img/types/${yourCard.type}.png`;
+    elements.yourType.src = `img/types/${yourCard.type}.png`.toLowerCase();
     elements.yourType.alt = `${yourCard.type} Type`;
-    elements.opponentType.src = `img/types/${opponentCard.type}.png`;
+    elements.opponentType.src = `img/types/${opponentCard.type}.png`.toLowerCase();
     elements.opponentType.alt = `${opponentCard.type} Type`;
 
     if (yourTurn) {
