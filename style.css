@@ -325,6 +325,7 @@ td {
 
     .stat-options button {
         min-width: 128px;
+        max-height: 25px;
     }
 
     .stat-options button span {
