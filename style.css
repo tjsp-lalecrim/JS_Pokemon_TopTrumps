@@ -40,6 +40,12 @@ body {
     margin: 10px;
 }
 
+.row .col-center {
+    width: 512px;
+    min-height: 150px;
+    gap: 5px;
+}
+
 .row .card {
     width: 256px;
     height: 450px;
