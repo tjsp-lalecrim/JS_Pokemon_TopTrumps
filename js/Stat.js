@@ -19,20 +19,24 @@ function getStatValue(card, stat) {
 }
 
 function calculateStatMultiplier(offensiveCard, defensiveCard, stat) {
-    if (!offensiveCard || !defensiveCard || !stat) {
-        console.error('Missing offensiveCard or defensiveCard or stat');
+    const requiredParams = [offensiveCard, defensiveCard, stat];
+    if (requiredParams.some(param => !param)) {
+        console.error('Missing offensiveCard, defensiveCard, or stat');
         return null;
     }
+
     const statValue = getStatValue(offensiveCard, stat);
     let statMultiplier = 1;
-    if (stat === 'Attack' || stat === 'SpecialAttack') {
+
+    if (['Attack', 'SpecialAttack'].includes(stat)) {
         statMultiplier = calculateTypeMultiplier(offensiveCard.type, defensiveCard.type);
-    } else if (stat === 'Defense' || stat === 'SpecialDefense') {
+    } else if (['Defense', 'SpecialDefense'].includes(stat)) {
         statMultiplier = 1 / calculateTypeMultiplier(defensiveCard.type, offensiveCard.type);
     }
 
-    return Number.parseInt(statValue * statMultiplier);
+    return parseInt(statValue * statMultiplier);
 }
+
 
 function getOpponentStat(selectedStat) {
     const opponentStat = {
@@ -49,23 +53,23 @@ function getOpponentStat(selectedStat) {
 
 
 function getHighestStat(card) {
-    const allValues = [card.hp, card.attack, card.defense, card.specialAttack, card.specialDefense, card.speed];
+    const stats = {
+        hp: 'HP',
+        attack: 'Attack',
+        defense: 'Defense',
+        specialAttack: 'SpecialAttack',
+        specialDefense: 'SpecialDefense',
+        speed: 'Speed'
+    };
 
-    const highestValue = Math.max(...allValues);
     let highestStat = '';
+    let highestValue = -Infinity;
 
-    if (highestValue === card.hp) {
-        highestStat = 'HP';
-    } else if (highestValue === card.attack) {
-        highestStat = 'Attack';
-    } else if (highestValue === card.defense) {
-        highestStat = 'Defense';
-    } else if (highestValue === card.specialAttack) {
-        highestStat = 'SpecialAttack';
-    } else if (highestValue === card.specialDefense) {
-        highestStat = 'SpecialDefense';
-    } else if (highestValue === card.speed) {
-        highestStat = 'Speed';
+    for (const [stat, value] of Object.entries(card)) {
+        if (value > highestValue) {
+            highestValue = value;
+            highestStat = stats[stat];
+        }
     }
 
     return highestStat;

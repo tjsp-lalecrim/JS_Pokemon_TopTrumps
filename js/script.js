@@ -304,9 +304,9 @@ function updateCompareStatsLog() {
     addLog(`${yourValueWithMultiplier} VS. ${opponentValueWithMultiplier}`);
 
     // result
-    if (yourValueWithMultiplier > opponentValue) {
+    if (yourValueWithMultiplier > opponentValueWithMultiplier) {
         addLog(`You win!`);
-    } else if (yourValueWithMultiplier < opponentValue) {
+    } else if (yourValueWithMultiplier < opponentValueWithMultiplier) {
         addLog(`You lose!`);
     } else {
         addLog(`Draw!`);
