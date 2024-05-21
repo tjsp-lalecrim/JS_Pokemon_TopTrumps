@@ -42,7 +42,7 @@ body {
 
 .row .col-center {
     width: 512px;
-    min-height: 150px;
+    height: 200px;
     gap: 5px;
 }
 
