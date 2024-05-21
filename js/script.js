@@ -3,6 +3,7 @@ const getElement = (id) => document.getElementById(id);
 const getQuerySelector = (selector) => document.querySelector(selector);
 
 const elements = {
+    header: getQuerySelector('header'),
     gameLog: getElement('game-log'),
     yourPoints: getQuerySelector('#your-points'),
     opponentPoints: getQuerySelector('#opponent-points'),
@@ -45,7 +46,7 @@ let yourTurn = true;
 
 // Game Initialization
 function startGame() {
-    hideElements('.menu');
+    hideElements('.menu','header');
     showElement('table');
     resetVariables();
     mountDecks();
@@ -374,6 +375,7 @@ function applyCardsAnimations() {
 function handleGameOver() {
     updateDecksLength();
     hideElements('.table');
+    showElement('header');
     showElement('menu');
     const resultMessage = getElement('result-message');
 

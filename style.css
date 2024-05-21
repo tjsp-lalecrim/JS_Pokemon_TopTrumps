@@ -10,7 +10,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 50px;
+    gap: 5px;
     background: #343541;
 }
 
@@ -31,25 +31,23 @@ body {
 .table .row {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
 }
 
 .row .col {
     width: 256px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     color: #ccc;
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 10px;
-    margin: 10px;
+    margin: 5px;
 }
 
 .row .col-center {
     width: 512px;
     height: 200px;
-    gap: 5px;
 }
 
 .row .col span#turn-message {
@@ -66,7 +64,7 @@ body {
     border: 1px solid black;
     border-radius: 10px;
     background: #f7f7f8;
-    margin: 10px;
+    margin: 5px;
 }
 
 .card.shake {
@@ -365,9 +363,5 @@ td {
     .row .col {
         gap: 0;
         margin: 0;
-    }
-
-    .row .col-center {
-        height: auto;
     }
 }
