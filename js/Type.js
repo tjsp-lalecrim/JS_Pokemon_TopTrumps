@@ -21,12 +21,15 @@ const typeChart = {
 
 function calculateTypeMultiplier(offensiveType, defensiveType) {
     if (!offensiveType || !defensiveType) {
-        console.error(!offensiveType ? 'Missing offensiveType' : 'Missing defensiveType');
+        const missingType = !offensiveType ? 'offensiveType' : 'defensiveType';
+        console.error(`Missing ${missingType}`);
         return 1;
     }
 
-    return typeChart[offensiveType][defensiveType] ?? 1;
+    const multiplier = typeChart[offensiveType]?.[defensiveType] || 1;
+    return multiplier;
 }
+
 
 function getHintByType(type) {
     const hintChart = {
