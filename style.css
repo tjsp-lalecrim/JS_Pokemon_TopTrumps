@@ -52,6 +52,11 @@ body {
     gap: 5px;
 }
 
+.row .col span#turn-message {
+    font-size: 24px;
+    font-weight: 600;
+}
+
 .row .card {
     width: 256px;
     height: 450px;
@@ -272,8 +277,7 @@ td {
     }
 }
 
-@media screen and (max-width: 800px) {
-
+@media screen and ((max-width: 800px)) {
     .menu .packs {
         flex-direction: column;
         gap: 10px;
@@ -287,7 +291,7 @@ td {
 
     .table .row {
         width: 100vw;
-        min-height: 50px;
+        min-height: 40px;
         flex-wrap: wrap;
         flex-direction: row;
         align-items: center;
@@ -342,5 +346,28 @@ td {
 
     .stat-options button {
         margin: 0;
+    }
+}
+
+@media screen and ((max-height: 700px)) {
+    .header {
+        display: none;
+    }
+
+    .table .row {
+        min-height: 20px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+
+    .row .col {
+        gap: 0;
+        margin: 0;
+    }
+
+    .row .col-center {
+        height: auto;
     }
 }

@@ -23,7 +23,8 @@ const elements = {
     opponentStatValue: getQuerySelector('#opponent-stat-value'),
     typeMultiplier: getQuerySelector('#type-multiplier'),
     result: getQuerySelector('#result'),
-    continueButton: getElement('next-turn')
+    continueButton: getElement('next-turn'),
+    turnMessage: getElement('turn-message')
 };
 
 // Global variables
@@ -91,7 +92,8 @@ function popCards() {
     updateImgs();
     updateNameAndType();
     updateStatsButtons();
-    addLog(yourTurn ? 'Your turn' : 'Opponent turn');
+    elements.turnMessage.innerText = yourTurn ? 'Your turn' : 'Opponent turn';
+    //addLog(yourTurn ? 'Your turn' : 'Opponent turn');
 
     if (!yourTurn) {
         setTimeout(opponentChooseStat, 2000);
