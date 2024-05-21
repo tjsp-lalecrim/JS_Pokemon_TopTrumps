@@ -3,6 +3,7 @@ const getElement = (id) => document.getElementById(id);
 const getQuerySelector = (selector) => document.querySelector(selector);
 
 const elements = {
+    header: getQuerySelector('header'),
     gameLog: getElement('game-log'),
     yourPoints: getQuerySelector('#your-points'),
     opponentPoints: getQuerySelector('#opponent-points'),
@@ -23,7 +24,8 @@ const elements = {
     opponentStatValue: getQuerySelector('#opponent-stat-value'),
     typeMultiplier: getQuerySelector('#type-multiplier'),
     result: getQuerySelector('#result'),
-    continueButton: getElement('next-turn')
+    continueButton: getElement('next-turn'),
+    turnMessage: getElement('turn-message')
 };
 
 // Global variables
@@ -44,7 +46,7 @@ let yourTurn = true;
 
 // Game Initialization
 function startGame() {
-    hideElements('.menu');
+    hideElements('.menu','header');
     showElement('table');
     resetVariables();
     mountDecks();
@@ -91,7 +93,8 @@ function popCards() {
     updateImgs();
     updateNameAndType();
     updateStatsButtons();
-    addLog(yourTurn ? 'Your turn' : 'Opponent turn');
+    elements.turnMessage.innerText = yourTurn ? 'Your turn' : 'Opponent turn';
+    //addLog(yourTurn ? 'Your turn' : 'Opponent turn');
 
     if (!yourTurn) {
         setTimeout(opponentChooseStat, 2000);
@@ -372,6 +375,7 @@ function applyCardsAnimations() {
 function handleGameOver() {
     updateDecksLength();
     hideElements('.table');
+    showElement('header');
     showElement('menu');
     const resultMessage = getElement('result-message');
 

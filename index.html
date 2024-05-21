@@ -14,7 +14,17 @@
 
 <body>
 
+    <header id="header" class="header">
+        <h1>Pokemon Top Trumps</h1>
+    </header>
+
     <div id="table" class="table">
+        <div class="row row-auto">
+            <div class="col col-auto">
+                <span id="turn-message"></span>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col">
                 <span id="your-cards"></span>
@@ -38,7 +48,7 @@
                 <img id="your-img" src="" alt="Pokemon Card">
                 <div id="your-options" class="stat-options"></div>
             </div>
-          
+
             <div id="opponent-current-card" class="card">
                 <span class="pokemon-label">
                     <span id="opponent-label"></span>
@@ -47,17 +57,26 @@
                 <img id="opponent-img" src="" alt="Pokemon Card">
                 <div id="opponent-options" class="stat-options"></div>
             </div>
-         
         </div>
 
         <div class="row">
-               <div class="col col-center">
+            <div class="col">
+                <span>You</span>
+            </div>
+            <div class="col">
+                <span>Opponent</span>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col col-center">
                 <div id="game-log"></div>
                 <button id="next-turn">Continue</button>
             </div>
         </div>
 
-        
+
     </div>
     <div id="menu" class="menu">
         <span id="result-message" class="menu-message"></span>
@@ -96,7 +115,7 @@
             <table id="type-chart" class="type-chart-table"></table>
         </div>
     </div>
-    
+
 </body>
 
 </html>
