@@ -33,6 +33,10 @@ body {
     align-items: center;
 }
 
+.row-auto{
+    width: 530px;
+}
+
 .row .col {
     width: 256px;
     display: flex;
