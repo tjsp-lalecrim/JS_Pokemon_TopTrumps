@@ -8,6 +8,7 @@ body {
     height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-direction: column;
     gap: 50px;
     background: #343541;
@@ -267,10 +268,6 @@ td {
 }
 
 @media screen and (max-width: 800px) {
-    body {
-        width: auto;
-        height: auto;
-    }
 
     .menu .packs {
         flex-direction: column;
