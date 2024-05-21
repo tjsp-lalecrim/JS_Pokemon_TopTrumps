@@ -50,7 +50,13 @@ body {
     height: 200px;
 }
 
+.row .col.col-auto{
+    width: 100%;
+}
+
 .row .col span#turn-message {
+    color: black;
+    background-color: #ccc;
     font-size: 24px;
     font-weight: 600;
 }
