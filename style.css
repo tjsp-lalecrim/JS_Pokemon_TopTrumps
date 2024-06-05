@@ -33,7 +33,7 @@ body {
     align-items: center;
 }
 
-.row-auto{
+.row-auto {
     width: 530px;
 }
 
@@ -54,7 +54,7 @@ body {
     height: 200px;
 }
 
-.row .col.col-auto{
+.row .col.col-auto {
     width: 100%;
 }
 
@@ -134,6 +134,7 @@ body {
 }
 
 .stat-options button span {
+    text-overflow: ellipsis;
     pointer-events: none;
     margin-left: 10px;
     margin-right: 10px;
@@ -374,4 +375,5 @@ td {
         gap: 0;
         margin: 0;
     }
+
 }

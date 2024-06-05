@@ -46,7 +46,7 @@ let yourTurn = true;
 
 // Game Initialization
 function startGame() {
-    hideElements('.menu','header');
+    hideElements('.menu', 'header');
     showElement('table');
     resetVariables();
     mountDecks();
@@ -94,7 +94,6 @@ function popCards() {
     updateNameAndType();
     updateStatsButtons();
     elements.turnMessage.innerText = yourTurn ? 'Your turn' : 'Opponent turn';
-    //addLog(yourTurn ? 'Your turn' : 'Opponent turn');
 
     if (!yourTurn) {
         setTimeout(opponentChooseStat, 2000);
@@ -335,7 +334,11 @@ function updateChosenStatValue(chosenStat, oldValue, newValue) {
     const chosenStatElement = getElement(chosenStat);
 
     if (oldValue != newValue) {
-        chosenStatElement.querySelector('.stat-value').innerText = `${oldValue} => ${newValue}`;
+        let innerText = window.innerWidth > 800
+            ? `${oldValue} => ${newValue}`
+            : `${newValue}`;
+
+        chosenStatElement.querySelector('.stat-value').innerText = innerText;
     }
 
     applyStatAnimation(chosenStat, oldValue, newValue);
