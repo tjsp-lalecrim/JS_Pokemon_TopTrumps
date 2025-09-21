@@ -13,109 +13,107 @@
 </head>
 
 <body>
+    <div class="app-shell">
+        <header id="header" class="header">
+            <h1>Pokemon Top Trumps</h1>
+        </header>
 
-    <header id="header" class="header">
-        <h1>Pokemon Top Trumps</h1>
-    </header>
+        <div id="table" class="table">
+            <div class="row row-auto">
+                <div class="col col-auto">
+                    <span id="turn-message" class="badge"></span>
+                </div>
+            </div>
 
-    <div id="table" class="table">
-        <div class="row row-auto">
-            <div class="col col-auto">
-                <span id="turn-message"></span>
+            <div class="row score-row">
+                <div class="col">
+                    <span id="your-cards" class="stat-chip" data-label="Your cards"></span>
+                </div>
+                <div class="col">
+                    <span id="opponent-cards" class="stat-chip" data-label="Opponent cards"></span>
+                </div>
+            </div>
+
+            <div class="row type-row">
+                <div id="your-type-name" class="col"></div>
+                <div id="opponent-type-name" class="col"></div>
+            </div>
+
+            <div class="row card-row">
+                <div id="your-current-card" class="card">
+                    <span class="pokemon-label">
+                        <span id="your-label"></span>
+                        <img id="your-type" src="" alt="Your Type">
+                    </span>
+                    <img id="your-img" src="" alt="Pokemon Card">
+                    <div id="your-options" class="stat-options"></div>
+                </div>
+
+                <div id="opponent-current-card" class="card">
+                    <span class="pokemon-label">
+                        <span id="opponent-label"></span>
+                        <img id="opponent-type" src="" alt="Opponent Type">
+                    </span>
+                    <img id="opponent-img" src="" alt="Pokemon Card">
+                    <div id="opponent-options" class="stat-options"></div>
+                </div>
+            </div>
+
+            <div class="row name-row">
+                <div class="col">
+                    <span class="name-tag">You</span>
+                </div>
+                <div class="col">
+                    <span class="name-tag">Opponent</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-center">
+                    <div id="game-log" class="log"></div>
+                    <button id="next-turn" class="primary-action">Continue</button>
+                </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col">
-                <span id="your-cards"></span>
-            </div>
-            <div class="col">
-                <span id="opponent-cards"> </span>
-            </div>
-        </div>
+        <div id="menu" class="menu">
+            <span id="result-message" class="menu-message"></span>
 
-        <div class="row">
-            <div id="your-type-name" class="col"></div>
-            <div id="opponent-type-name" class="col"></div>
-        </div>
-
-        <div class="row">
-            <div id="your-current-card" class="card">
-                <span class="pokemon-label">
-                    <span id="your-label"></span>
-                    <img id="your-type" src="" alt="Your Type">
-                </span>
-                <img id="your-img" src="" alt="Pokemon Card">
-                <div id="your-options" class="stat-options"></div>
+            <div class="menu-heading">
+                <h2>Select a pack to start</h2>
+                <p>Each pack offers a different stage of evolution. Choose wisely!</p>
             </div>
 
-            <div id="opponent-current-card" class="card">
-                <span class="pokemon-label">
-                    <span id="opponent-label"></span>
-                    <img id="opponent-type" src="" alt="Opponent Type">
-                </span>
-                <img id="opponent-img" src="" alt="Pokemon Card">
-                <div id="opponent-options" class="stat-options"></div>
+            <div class="packs">
+                <div id="first-stage-pack" class="pokemon-pack">
+                    <img src="img/pokemons/Charmander.png" alt="First stage pack">
+                    <span>First Stage Pack</span>
+                </div>
+                <div id="mid-stage-pack" class="pokemon-pack">
+                    <img src="img/pokemons/Charmeleon.png" alt="Mid stage pack">
+                    <span>Mid Stage Pack</span>
+                </div>
+                <div id="last-stage-pack" class="pokemon-pack">
+                    <img src="img/pokemons/Charizard.png" alt="Last stage pack">
+                    <span>Last Stage Pack</span>
+                </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <span>You</span>
+            <div class="rules">
+                <h3>How to play</h3>
+                <ol>
+                    <li>Select a stat from your card.</li>
+                    <li>HP and Speed compare directly with your opponent.</li>
+                    <li>Attack and Special Attack battle against the opponent's defensive stats.</li>
+                    <li>Defense and Special Defense confront the opponent's offensive stats.</li>
+                    <li>Type multipliers apply to offensive and defensive stats.</li>
+                </ol>
             </div>
-            <div class="col">
-                <span>Opponent</span>
+            <div class="type-chart">
+                <p class="type-chart-title">Type Chart - Multipliers</p>
+                <table id="type-chart" class="type-chart-table"></table>
             </div>
         </div>
-
-
-        <div class="row">
-            <div class="col col-center">
-                <div id="game-log"></div>
-                <button id="next-turn">Continue</button>
-            </div>
-        </div>
-
-
     </div>
-    <div id="menu" class="menu">
-        <span id="result-message" class="menu-message"></span>
-
-        <span class="menu-message">
-            Select a pack to start
-        </span>
-
-        <div class="packs">
-            <div id="first-stage-pack" class="pokemon-pack">
-                <img src="img/pokemons/Charmander.png" alt="First stage pack">
-                <span>First Stage Pack</span>
-            </div>
-            <div id="mid-stage-pack" class="pokemon-pack">
-                <img src="img/pokemons/Charmeleon.png" alt="Mid stage pack">
-                <span>Mid Stage Pack</span>
-            </div>
-            <div id="last-stage-pack" class="pokemon-pack">
-                <img src="img/pokemons/Charizard.png" alt="Last stage pack">
-                <span>Last Stage Pack</span>
-            </div>
-        </div>
-        <div class="rules">
-            <div>Rules:</div>
-            <div>1. Select a stat from your card.</div>
-            <div>2. If you choose HP or Speed, your stat will be compared with the HP or Speed of your opponent.</div>
-            <div>3. If you opt for Attack or Special Attack, your stat will be compared with the Defense or Special
-                Defense of your opponent.</div>
-            <div>4. If you pick Defense or Special Defense, your stat will be compared with the Attack or Special Attack
-                of your opponent.</div>
-            <div>5. A type multiplier will be applied when Attack, Defense, Special Attack, or Special Defense is
-                selected.</div>
-        </div>
-        <div class="type-chart">
-            <p class="type-chart-title">Type Chart - Multipliers</p>
-            <table id="type-chart" class="type-chart-table"></table>
-        </div>
-    </div>
-
 </body>
 
 </html>
