@@ -19,52 +19,35 @@
         </header>
 
         <div id="table" class="table">
-            <div class="row row-auto">
-                <div class="col col-auto">
-                    <span id="turn-message" class="badge"></span>
-                </div>
-            </div>
-
-            <div class="row score-row">
-                <div class="col">
-                    <span id="your-cards" class="stat-chip" data-label="Your cards"></span>
-                </div>
-                <div class="col">
-                    <span id="opponent-cards" class="stat-chip" data-label="Opponent cards"></span>
-                </div>
-            </div>
-
-            <div class="row type-row">
-                <div id="your-type-name" class="col"></div>
-                <div id="opponent-type-name" class="col"></div>
+            <div class="row ">
+                <span id="turn-message" class="badge"></span>
             </div>
 
             <div class="row card-row">
-                <div id="your-current-card" class="card">
-                    <span class="pokemon-label">
-                        <span id="your-label"></span>
-                        <img id="your-type" src="" alt="Your Type">
-                    </span>
-                    <img id="your-img" src="" alt="Pokemon Card">
-                    <div id="your-options" class="stat-options"></div>
+                <div>
+                    
+                    <div id="your-type-name" class="col"></div>
+                    <div id="your-current-card" class="card">
+                        <span class="pokemon-label">
+                            <span id="your-label"></span>
+                            <img id="your-type" src="" alt="Your Type">
+                        </span>
+                        <img id="your-img" src="" alt="Pokemon Card">
+                        <div id="your-options" class="stat-options"></div>
+                    </div>
+                    <span id="your-cards" class="stat-chip" data-label="Your cards"></span>
                 </div>
-
-                <div id="opponent-current-card" class="card">
-                    <span class="pokemon-label">
-                        <span id="opponent-label"></span>
-                        <img id="opponent-type" src="" alt="Opponent Type">
-                    </span>
-                    <img id="opponent-img" src="" alt="Pokemon Card">
-                    <div id="opponent-options" class="stat-options"></div>
-                </div>
-            </div>
-
-            <div class="row name-row">
-                <div class="col">
-                    <span class="name-tag">You</span>
-                </div>
-                <div class="col">
-                    <span class="name-tag">Opponent</span>
+                <div>   
+                    <div id="opponent-type-name" class="col"></div>
+                    <div id="opponent-current-card" class="card">
+                        <span class="pokemon-label">
+                            <span id="opponent-label"></span>
+                            <img id="opponent-type" src="" alt="Opponent Type">
+                        </span>
+                        <img id="opponent-img" src="" alt="Pokemon Card">
+                        <div id="opponent-options" class="stat-options"></div>
+                    </div>
+                    <span id="opponent-cards" class="stat-chip" data-label="Opponent cards"></span>
                 </div>
             </div>
 
