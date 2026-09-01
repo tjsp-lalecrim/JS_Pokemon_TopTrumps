@@ -4,15 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=responsive-6">
     <script src="js/PokemonCard.js" defer></script>
     <script src="js/Type.js" defer></script>
     <script src="js/Stat.js" defer></script>
-    <script src="js/script.js" defer></script>
+    <script src="js/script.js?v=responsive-4" defer></script>
     <title>Pokemon Top Trumps</title>
 </head>
 
 <body>
+    <aside id="orientation-prompt" class="orientation-prompt" role="dialog" aria-labelledby="orientation-title" aria-describedby="orientation-description">
+        <div class="orientation-prompt-content">
+            <img src="img/pokeball.png" alt="" aria-hidden="true">
+            <h2 id="orientation-title">Gire o aparelho</h2>
+            <p id="orientation-description">Para aproveitar melhor as cartas, jogue com o smartphone na horizontal.</p>
+            <button id="enter-landscape" class="primary-action orientation-action" type="button">Jogar em tela cheia</button>
+            <button id="continue-portrait" class="orientation-dismiss" type="button">Continuar assim</button>
+            <p id="orientation-status" class="orientation-status" role="status" aria-live="polite"></p>
+        </div>
+    </aside>
+
     <div class="app-shell">
         <header id="header" class="header">
             <h1>Pokemon Top Trumps</h1>
@@ -93,7 +104,9 @@
             </div>
             <div class="type-chart">
                 <p class="type-chart-title">Type Chart - Multipliers</p>
-                <table id="type-chart" class="type-chart-table"></table>
+                <div class="type-chart-scroll" tabindex="0" aria-label="Scrollable Pokemon type multiplier chart">
+                    <table id="type-chart" class="type-chart-table"></table>
+                </div>
             </div>
         </div>
     </div>
