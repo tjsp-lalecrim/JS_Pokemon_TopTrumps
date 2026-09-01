@@ -21,6 +21,8 @@ const elements = {
     opponentImg: getElement('opponent-img'),
     yourOptions: getQuerySelector('#your-options'),
     opponentOptions: getQuerySelector('#opponent-options'),
+    yourEvolutionBanner: getElement('your-evolution-banner'),
+    opponentEvolutionBanner: getElement('opponent-evolution-banner'),
     selectedStat: getQuerySelector('#selected-stat'),
     yourStatValue: getQuerySelector('#your-stat-value'),
     opponentStatValue: getQuerySelector('#opponent-stat-value'),
@@ -76,19 +78,27 @@ let evolutionMode = false;
 const EVOLUTION_XP = 2;
 const evolutionMap = {
     Bulbasaur: 'Ivysaur', Charmander: 'Charmeleon', Squirtle: 'Wartortle',
+    Ivysaur: 'Venusaur', Charmeleon: 'Charizard', Wartortle: 'Blastoise',
     Pidgey: 'Pidgeotto', Rattata: 'Raticate', Spearow: 'Fearow', Ekans: 'Arbok',
+    Pidgeotto: 'Pidgeot',
     Pikachu: 'Raichu', Sandshrew: 'Sandslash', 'Nidoran F': 'Nidorina',
     'Nidoran M': 'Nidorino', Clefairy: 'Clefable', Vulpix: 'Ninetales',
+    Nidorina: 'Nidoqueen', Nidorino: 'Nidoking',
     Jigglypuff: 'Wigglytuff', Zubat: 'Golbat', Oddish: 'Gloom', Paras: 'Parasect',
+    Gloom: 'Vileplume',
     Venonat: 'Venomoth', Diglett: 'Dugtrio', Meowth: 'Persian', Psyduck: 'Golduck',
     Mankey: 'Primeape', Growlithe: 'Arcanine', Poliwag: 'Poliwhirl', Abra: 'Kadabra',
     Machop: 'Machoke', Bellsprout: 'Weepinbell', Tentacool: 'Tentacruel',
+    Poliwhirl: 'Poliwrath', Kadabra: 'Alakazam', Machoke: 'Machamp',
+    Weepinbell: 'Victreebel',
     Geodude: 'Graveler', Ponyta: 'Rapidash', Slowpoke: 'Slowbro',
     Magnemite: 'Magneton', Doduo: 'Dodrio', Seel: 'Dewgong', Grimer: 'Muk',
-    Shellder: 'Cloyster', Gastly: 'Haunter', Drowzee: 'Hypno', Krabby: 'Kingler',
+    Shellder: 'Cloyster', Gastly: 'Haunter', Haunter: 'Gengar',
+    Graveler: 'Golem', Drowzee: 'Hypno', Krabby: 'Kingler',
     Voltorb: 'Electrode', Exeggcute: 'Exeggutor', Cubone: 'Marowak',
     Koffing: 'Weezing', Rhyhorn: 'Rhydon', Horsea: 'Seadra', Goldeen: 'Seaking',
-    Staryu: 'Starmie', Omanyte: 'Omastar', Kabuto: 'Kabutops', Dratini: 'Dragonair'
+    Staryu: 'Starmie', Omanyte: 'Omastar', Kabuto: 'Kabutops',
+    Dratini: 'Dragonair', Dragonair: 'Dragonite'
 };
 
 const cardCatalog = new Map(allCards.map(card => [card.name, card]));
@@ -177,7 +187,9 @@ function updateXpDisplay() {
 }
 
 function getXpLabel(card) {
-    return card.hasEvolved ? 'EVOLVED' : `XP ${card.xp}/${EVOLUTION_XP}`;
+    return evolutionMap[card.name]
+        ? `XP ${card.xp}/${EVOLUTION_XP}`
+        : 'FINAL FORM';
 }
 
 function hideContinueButton() {
@@ -398,12 +410,14 @@ function updateCompareStatsLog() {
 }
 
 function addCurrentCardsToWinner() {
+    let evolutionHappened = false;
+
     if (yourValueWithMultiplier > opponentValueWithMultiplier) {
-        processEvolutionResult(yourCard, opponentCard);
+        evolutionHappened = processEvolutionResult(yourCard, opponentCard);
         yourDeck.unshift(yourCard, opponentCard);
         yourTurn = true;
     } else if (yourValueWithMultiplier < opponentValueWithMultiplier) {
-        processEvolutionResult(opponentCard, yourCard);
+        evolutionHappened = processEvolutionResult(opponentCard, yourCard);
         opponentDeck.unshift(yourCard, opponentCard);
         yourTurn = false;
     } else {
@@ -411,31 +425,76 @@ function addCurrentCardsToWinner() {
         opponentDeck.unshift(opponentCard);
     }
 
-    setTimeout(showContinueButton, 1000);
+    setTimeout(showContinueButton, evolutionHappened ? 2200 : 1000);
 }
 
 function processEvolutionResult(winner, loser) {
-    if (!evolutionMode) return;
+    if (!evolutionMode) return false;
 
     resetCardProgress(loser);
 
-    if (winner.hasEvolved) return;
+    const evolvedName = evolutionMap[winner.name];
+    if (!evolvedName) return false;
+
     winner.xp += 1;
 
     if (winner.xp < EVOLUTION_XP) {
         addLog(`${winner.name} gained 1 XP (${winner.xp}/${EVOLUTION_XP})`);
-        return;
+        return false;
     }
 
-    const evolvedName = evolutionMap[winner.name];
     const evolvedCard = cardCatalog.get(evolvedName);
-    if (!evolvedCard) return;
+    if (!evolvedCard) return false;
 
     const previousName = winner.name;
     copyCardStats(winner, evolvedCard);
     winner.xp = 0;
     winner.hasEvolved = true;
     addLog(`${previousName} evolved into ${winner.name}!`);
+    playEvolutionAnimation(winner, previousName);
+    return true;
+}
+
+function playEvolutionAnimation(card, previousName) {
+    const isYourCard = card === yourCard;
+    const cardElement = getElement(isYourCard ? 'your-current-card' : 'opponent-current-card');
+    const banner = isYourCard ? elements.yourEvolutionBanner : elements.opponentEvolutionBanner;
+
+    banner.innerText = `${previousName} is evolving...`;
+    cardElement.classList.add('evolving');
+
+    setTimeout(() => {
+        refreshDisplayedCard(card, isYourCard);
+        banner.innerText = `${card.name}!`;
+        cardElement.classList.add('evolution-revealed');
+    }, 700);
+
+    setTimeout(() => {
+        cardElement.classList.remove('evolving', 'evolution-revealed');
+        banner.innerText = '';
+    }, 2100);
+}
+
+function refreshDisplayedCard(card, isYourCard) {
+    const nameElement = isYourCard ? elements.yourName : elements.opponentName;
+    const typeElement = isYourCard ? elements.yourType : elements.opponentType;
+    const typeNameElement = isYourCard ? elements.yourTypeName : elements.opponentTypeName;
+    const imageElement = isYourCard ? elements.yourImg : elements.opponentImg;
+    const optionsElement = isYourCard ? elements.yourOptions : elements.opponentOptions;
+    const idPrefix = isYourCard ? '' : 'opp-';
+
+    nameElement.innerText = card.name;
+    typeElement.src = `img/types/${card.type}.png`.toLowerCase();
+    typeElement.alt = `${card.type} Type`;
+    typeNameElement.innerText = card.type;
+    imageElement.src = `img/pokemons/${card.name}.png`;
+    optionsElement.innerHTML = '';
+
+    stats.forEach(stat => {
+        optionsElement.append(createStatButton(stat, `${idPrefix}${stat}`, card, true, false));
+    });
+
+    updateXpDisplay();
 }
 
 function resetCardProgress(card) {
