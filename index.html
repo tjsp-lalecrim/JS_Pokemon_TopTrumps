@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css?v=responsive-6">
+    <link rel="stylesheet" href="style.css?v=persistence-1">
     <script src="js/PokemonCard.js" defer></script>
     <script src="js/Type.js" defer></script>
     <script src="js/Stat.js" defer></script>
-    <script src="js/script.js?v=responsive-4" defer></script>
+    <script src="js/script.js?v=persistence-1" defer></script>
     <title>Pokemon Top Trumps</title>
 </head>
 
@@ -81,6 +81,10 @@
                 <h2>Select a pack to start</h2>
                 <p>Each pack offers a different stage of evolution. Choose wisely!</p>
             </div>
+
+            <button id="resume-game" class="primary-action resume-game" type="button" hidden>
+                Continue saved game
+            </button>
 
             <div class="packs">
                 <div id="first-stage-pack" class="pokemon-pack">
