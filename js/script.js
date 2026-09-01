@@ -29,6 +29,7 @@ const elements = {
     typeMultiplier: getQuerySelector('#type-multiplier'),
     result: getQuerySelector('#result'),
     continueButton: getElement('next-turn'),
+    resumeButton: getElement('resume-game'),
     turnMessage: getElement('turn-message'),
     orientationPrompt: getElement('orientation-prompt'),
     orientationStatus: getElement('orientation-status'),
@@ -76,6 +77,7 @@ let yourTurn = true;
 let evolutionMode = false;
 
 const EVOLUTION_XP = 2;
+const SAVED_GAME_KEY = 'pokemon-top-trumps:game:v1';
 const evolutionMap = {
     Bulbasaur: 'Ivysaur', Charmander: 'Charmeleon', Squirtle: 'Wartortle',
     Ivysaur: 'Venusaur', Charmeleon: 'Charizard', Wartortle: 'Blastoise',
@@ -120,6 +122,103 @@ function createPlayableCard(card) {
     return playableCard;
 }
 
+function serializeCard(card) {
+    return {
+        name: card.name,
+        type: card.type,
+        hp: card.hp,
+        attack: card.attack,
+        defense: card.defense,
+        specialAttack: card.specialAttack,
+        specialDefense: card.specialDefense,
+        speed: card.speed,
+        baseName: card.baseName,
+        xp: card.xp,
+        hasEvolved: card.hasEvolved
+    };
+}
+
+function restoreCard(savedCard) {
+    const card = new PokemonCard(
+        savedCard.name, savedCard.type, savedCard.hp, savedCard.attack,
+        savedCard.defense, savedCard.specialAttack, savedCard.specialDefense,
+        savedCard.speed
+    );
+    card.baseName = savedCard.baseName || savedCard.name;
+    card.xp = Number.isInteger(savedCard.xp) ? savedCard.xp : 0;
+    card.hasEvolved = savedCard.hasEvolved === true;
+    return card;
+}
+
+function isValidSavedGame(savedGame) {
+    const isValidDeck = deck => Array.isArray(deck) && deck.length > 0 &&
+        deck.every(card => card && typeof card.name === 'string' && cardCatalog.has(card.name));
+
+    return savedGame?.version === 1 &&
+        typeof savedGame.yourTurn === 'boolean' &&
+        typeof savedGame.evolutionMode === 'boolean' &&
+        isValidDeck(savedGame.yourDeck) &&
+        isValidDeck(savedGame.opponentDeck);
+}
+
+function readSavedGame() {
+    try {
+        const savedGame = JSON.parse(localStorage.getItem(SAVED_GAME_KEY));
+        return isValidSavedGame(savedGame) ? savedGame : null;
+    } catch (error) {
+        console.warn('The saved game could not be read.', error);
+        return null;
+    }
+}
+
+function updateResumeOption() {
+    elements.resumeButton.hidden = !readSavedGame();
+}
+
+function saveGame() {
+    const savedGame = {
+        version: 1,
+        yourDeck: yourDeck.map(serializeCard),
+        opponentDeck: opponentDeck.map(serializeCard),
+        yourTurn,
+        evolutionMode
+    };
+
+    try {
+        localStorage.setItem(SAVED_GAME_KEY, JSON.stringify(savedGame));
+    } catch (error) {
+        console.warn('The game could not be saved.', error);
+    }
+}
+
+function clearSavedGame() {
+    try {
+        localStorage.removeItem(SAVED_GAME_KEY);
+    } catch (error) {
+        console.warn('The saved game could not be removed.', error);
+    }
+    elements.resumeButton.hidden = true;
+}
+
+function resumeSavedGame() {
+    const savedGame = readSavedGame();
+    if (!savedGame) {
+        updateResumeOption();
+        return;
+    }
+
+    yourDeck = savedGame.yourDeck.map(restoreCard);
+    opponentDeck = savedGame.opponentDeck.map(restoreCard);
+    yourTurn = savedGame.yourTurn;
+    evolutionMode = savedGame.evolutionMode;
+    yourCard = null;
+    opponentCard = null;
+
+    hideElements('.menu', 'header');
+    showElement('table');
+    popCards();
+}
+
 // Game Initialization
 function startGame() {
     hideElements('.menu','header');
@@ -158,6 +257,8 @@ function popCards() {
     if (yourDeck.length === 0 || opponentDeck.length === 0) {
         return handleGameOver();
     }
+
+    saveGame();
 
     yourCard = yourDeck.pop();
     opponentCard = opponentDeck.pop();
@@ -556,6 +657,7 @@ function applyCardsAnimations() {
 
 // Game Over Handling
 function handleGameOver() {
+    clearSavedGame();
     updateDecksLength();
     hideElements('.table');
     showElement('header');
@@ -575,6 +677,7 @@ function showElement(selector) {
 }
 
 function selectPack(pack, useEvolutionMode = false) {
+    clearSavedGame();
     evolutionMode = useEvolutionMode;
     currentPack = [...pack];
     deckLength = currentPack.length / 2;
@@ -587,5 +690,8 @@ getElement('mid-stage-pack').addEventListener('click', () => selectPack(midStage
 getElement('last-stage-pack').addEventListener('click', () => selectPack(lastStagePack));
 getElement('evolution-mode').addEventListener('click', () => selectPack(evolutionPack, true));
 getElement('next-turn').addEventListener('click', () => popCards());
+elements.resumeButton.addEventListener('click', resumeSavedGame);
 elements.enterLandscapeButton.addEventListener('click', requestLandscapeMode);
 elements.continuePortraitButton.addEventListener('click', dismissOrientationPrompt);
+
+updateResumeOption();

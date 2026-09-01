@@ -493,6 +493,16 @@ img {
     font-size: clamp(0.92rem, 1.5vw, 1rem);
 }
 
+.resume-game {
+    align-self: center;
+    display: inline-flex;
+    visibility: visible;
+}
+
+.resume-game[hidden] {
+    display: none;
+}
+
 .packs {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(clamp(140px, 30vw, 190px), 1fr));
