@@ -46,6 +46,7 @@
                         <img id="your-img" src="" alt="Pokemon Card">
                         <div id="your-options" class="stat-options"></div>
                     </div>
+                    <span id="your-xp" class="xp-chip" hidden></span>
                     <span id="your-cards" class="stat-chip" data-label="Your cards"></span>
                 </div>
                 <div>   
@@ -58,6 +59,7 @@
                         <img id="opponent-img" src="" alt="Pokemon Card">
                         <div id="opponent-options" class="stat-options"></div>
                     </div>
+                    <span id="opponent-xp" class="xp-chip" hidden></span>
                     <span id="opponent-cards" class="stat-chip" data-label="Opponent cards"></span>
                 </div>
             </div>
@@ -91,6 +93,11 @@
                     <img src="img/pokemons/Charizard.png" alt="Last stage pack">
                     <span>Last Stage Pack</span>
                 </div>
+                <div id="evolution-mode" class="pokemon-pack evolution-pack">
+                    <img src="img/pokemons/Ivysaur.png" alt="Evolution mode">
+                    <span>Evolution Mode</span>
+                    <small>Win, gain XP and evolve</small>
+                </div>
             </div>
             <div class="rules">
                 <h3>How to play</h3>
@@ -100,6 +107,7 @@
                     <li>Attack and Special Attack battle against the opponent's defensive stats.</li>
                     <li>Defense and Special Defense confront the opponent's offensive stats.</li>
                     <li>Type multipliers apply to offensive and defensive stats.</li>
+                    <li>In Evolution Mode, two wins evolve a card. A loss resets its XP and form.</li>
                 </ol>
             </div>
             <div class="type-chart">
