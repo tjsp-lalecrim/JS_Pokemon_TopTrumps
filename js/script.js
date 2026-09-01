@@ -9,6 +9,8 @@ const elements = {
     opponentPoints: getQuerySelector('#opponent-points'),
     yourCards: getQuerySelector('#your-cards'),
     opponentCards: getQuerySelector('#opponent-cards'),
+    yourXp: getElement('your-xp'),
+    opponentXp: getElement('opponent-xp'),
     yourName: getQuerySelector('#your-label'),
     opponentName: getQuerySelector('#opponent-label'),
     yourType: getQuerySelector('#your-type'),
@@ -69,6 +71,44 @@ let typeMultiplier = 1;
 let yourValueWithMultiplier = 0;
 let opponentValueWithMultiplier = 0;
 let yourTurn = true;
+let evolutionMode = false;
+
+const EVOLUTION_XP = 2;
+const evolutionMap = {
+    Bulbasaur: 'Ivysaur', Charmander: 'Charmeleon', Squirtle: 'Wartortle',
+    Pidgey: 'Pidgeotto', Rattata: 'Raticate', Spearow: 'Fearow', Ekans: 'Arbok',
+    Pikachu: 'Raichu', Sandshrew: 'Sandslash', 'Nidoran F': 'Nidorina',
+    'Nidoran M': 'Nidorino', Clefairy: 'Clefable', Vulpix: 'Ninetales',
+    Jigglypuff: 'Wigglytuff', Zubat: 'Golbat', Oddish: 'Gloom', Paras: 'Parasect',
+    Venonat: 'Venomoth', Diglett: 'Dugtrio', Meowth: 'Persian', Psyduck: 'Golduck',
+    Mankey: 'Primeape', Growlithe: 'Arcanine', Poliwag: 'Poliwhirl', Abra: 'Kadabra',
+    Machop: 'Machoke', Bellsprout: 'Weepinbell', Tentacool: 'Tentacruel',
+    Geodude: 'Graveler', Ponyta: 'Rapidash', Slowpoke: 'Slowbro',
+    Magnemite: 'Magneton', Doduo: 'Dodrio', Seel: 'Dewgong', Grimer: 'Muk',
+    Shellder: 'Cloyster', Gastly: 'Haunter', Drowzee: 'Hypno', Krabby: 'Kingler',
+    Voltorb: 'Electrode', Exeggcute: 'Exeggutor', Cubone: 'Marowak',
+    Koffing: 'Weezing', Rhyhorn: 'Rhydon', Horsea: 'Seadra', Goldeen: 'Seaking',
+    Staryu: 'Starmie', Omanyte: 'Omastar', Kabuto: 'Kabutops', Dratini: 'Dragonair'
+};
+
+const cardCatalog = new Map(allCards.map(card => [card.name, card]));
+const evolutionPack = firstStagePack.filter(card => evolutionMap[card.name]);
+
+function copyCardStats(target, source) {
+    ['name', 'type', 'hp', 'attack', 'defense', 'specialAttack', 'specialDefense', 'speed']
+        .forEach(property => target[property] = source[property]);
+}
+
+function createPlayableCard(card) {
+    const playableCard = new PokemonCard(
+        card.name, card.type, card.hp, card.attack, card.defense,
+        card.specialAttack, card.specialDefense, card.speed
+    );
+    playableCard.baseName = card.name;
+    playableCard.xp = 0;
+    playableCard.hasEvolved = false;
+    return playableCard;
+}
 
 // Game Initialization
 function startGame() {
@@ -95,7 +135,7 @@ function resetVariables() {
 
 // Deck Handling
 function mountDecks() {
-    const cards = currentPack.slice(0, currentPack.length);
+    const cards = currentPack.map(createPlayableCard);
     const shuffledCards = cards.sort(() => Math.random() - 0.5);
 
     yourDeck = shuffledCards.slice(0, deckLength);
@@ -119,12 +159,25 @@ function popCards() {
     updateImgs();
     updateNameAndType();
     updateStatsButtons();
+    updateXpDisplay();
     elements.turnMessage.innerText = yourTurn ? 'Your turn' : 'Opponent turn';
     //addLog(yourTurn ? 'Your turn' : 'Opponent turn');
 
     if (!yourTurn) {
         setTimeout(opponentChooseStat, 2000);
     }
+}
+
+function updateXpDisplay() {
+    [elements.yourXp, elements.opponentXp].forEach(element => element.hidden = !evolutionMode);
+    if (!evolutionMode) return;
+
+    elements.yourXp.innerText = getXpLabel(yourCard);
+    elements.opponentXp.innerText = getXpLabel(opponentCard);
+}
+
+function getXpLabel(card) {
+    return card.hasEvolved ? 'EVOLVED' : `XP ${card.xp}/${EVOLUTION_XP}`;
 }
 
 function hideContinueButton() {
@@ -346,9 +399,11 @@ function updateCompareStatsLog() {
 
 function addCurrentCardsToWinner() {
     if (yourValueWithMultiplier > opponentValueWithMultiplier) {
+        processEvolutionResult(yourCard, opponentCard);
         yourDeck.unshift(yourCard, opponentCard);
         yourTurn = true;
     } else if (yourValueWithMultiplier < opponentValueWithMultiplier) {
+        processEvolutionResult(opponentCard, yourCard);
         opponentDeck.unshift(yourCard, opponentCard);
         yourTurn = false;
     } else {
@@ -357,6 +412,47 @@ function addCurrentCardsToWinner() {
     }
 
     setTimeout(showContinueButton, 1000);
+}
+
+function processEvolutionResult(winner, loser) {
+    if (!evolutionMode) return;
+
+    resetCardProgress(loser);
+
+    if (winner.hasEvolved) return;
+    winner.xp += 1;
+
+    if (winner.xp < EVOLUTION_XP) {
+        addLog(`${winner.name} gained 1 XP (${winner.xp}/${EVOLUTION_XP})`);
+        return;
+    }
+
+    const evolvedName = evolutionMap[winner.name];
+    const evolvedCard = cardCatalog.get(evolvedName);
+    if (!evolvedCard) return;
+
+    const previousName = winner.name;
+    copyCardStats(winner, evolvedCard);
+    winner.xp = 0;
+    winner.hasEvolved = true;
+    addLog(`${previousName} evolved into ${winner.name}!`);
+}
+
+function resetCardProgress(card) {
+    const hadProgress = card.xp > 0 || card.hasEvolved;
+    const previousName = card.name;
+    const baseCard = cardCatalog.get(card.baseName);
+
+    if (baseCard) copyCardStats(card, baseCard);
+    card.xp = 0;
+    card.hasEvolved = false;
+
+    if (hadProgress) {
+        const message = previousName === card.name
+            ? `${card.name} lost its XP.`
+            : `${previousName} returned to ${card.name}.`;
+        addLog(message);
+    }
 }
 
 function updateChosenStatValue(chosenStat, oldValue, newValue) {
@@ -419,7 +515,8 @@ function showElement(selector) {
     getElement(selector).style.display = 'flex';
 }
 
-function selectPack(pack) {
+function selectPack(pack, useEvolutionMode = false) {
+    evolutionMode = useEvolutionMode;
     currentPack = [...pack];
     deckLength = currentPack.length / 2;
     startGame();
@@ -429,6 +526,7 @@ function selectPack(pack) {
 getElement('first-stage-pack').addEventListener('click', () => selectPack(firstStagePack));
 getElement('mid-stage-pack').addEventListener('click', () => selectPack(midStagePack));
 getElement('last-stage-pack').addEventListener('click', () => selectPack(lastStagePack));
+getElement('evolution-mode').addEventListener('click', () => selectPack(evolutionPack, true));
 getElement('next-turn').addEventListener('click', () => popCards());
 elements.enterLandscapeButton.addEventListener('click', requestLandscapeMode);
 elements.continuePortraitButton.addEventListener('click', dismissOrientationPrompt);
