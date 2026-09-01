@@ -25,8 +25,34 @@ const elements = {
     typeMultiplier: getQuerySelector('#type-multiplier'),
     result: getQuerySelector('#result'),
     continueButton: getElement('next-turn'),
-    turnMessage: getElement('turn-message')
+    turnMessage: getElement('turn-message'),
+    orientationPrompt: getElement('orientation-prompt'),
+    orientationStatus: getElement('orientation-status'),
+    enterLandscapeButton: getElement('enter-landscape'),
+    continuePortraitButton: getElement('continue-portrait')
 };
+
+function dismissOrientationPrompt() {
+    elements.orientationPrompt.dataset.dismissed = 'true';
+}
+
+async function requestLandscapeMode() {
+    elements.orientationStatus.innerText = '';
+
+    try {
+        if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+            await document.documentElement.requestFullscreen();
+        }
+
+        if (screen.orientation && typeof screen.orientation.lock === 'function') {
+            await screen.orientation.lock('landscape');
+        }
+    } catch (error) {
+        elements.orientationStatus.innerText = 'Não foi possível alterar a orientação. O jogo continuará normalmente.';
+    } finally {
+        dismissOrientationPrompt();
+    }
+}
 
 // Global variables
 let currentPack = [];
@@ -103,9 +129,11 @@ function popCards() {
 
 function hideContinueButton() {
     elements.continueButton.style.visibility = 'hidden';
+    elements.continueButton.style.display = 'none';
 }
 
 function showContinueButton() {
+    elements.continueButton.style.display = 'inline-flex';
     elements.continueButton.style.visibility = 'visible';
 }
 
@@ -184,7 +212,7 @@ function createStatButton(stat, id, card, showStatValue, isClickable) {
     statButton.id = id;
 
     const statDescription = document.createElement('span');
-    statDescription.innerText = stat;
+    statDescription.innerText = stat.replace(/([a-z])([A-Z])/g, '$1 $2');
 
     const statValue = document.createElement('span');
     statValue.classList.add('stat-value');
@@ -402,3 +430,5 @@ getElement('first-stage-pack').addEventListener('click', () => selectPack(firstS
 getElement('mid-stage-pack').addEventListener('click', () => selectPack(midStagePack));
 getElement('last-stage-pack').addEventListener('click', () => selectPack(lastStagePack));
 getElement('next-turn').addEventListener('click', () => popCards());
+elements.enterLandscapeButton.addEventListener('click', requestLandscapeMode);
+elements.continuePortraitButton.addEventListener('click', dismissOrientationPrompt);
