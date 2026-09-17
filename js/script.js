@@ -460,15 +460,16 @@ function highlightStats() {
 function compareStats() {
     yourValue = getStatValue(yourCard, yourStat);
     opponentValue = getStatValue(opponentCard, opponentStat);
+    yourValueWithMultiplier = yourValue;
+    opponentValueWithMultiplier = opponentValue;
+    typeMultiplier = 1;
 
-    if (yourTurn) {
+    if (['Attack', 'SpecialAttack'].includes(yourStat)) {
         typeMultiplier = calculateTypeMultiplier(yourCard.type, opponentCard.type);
         yourValueWithMultiplier = calculateStatMultiplier(yourCard, opponentCard, yourStat);
-        opponentValueWithMultiplier = opponentValue;
         updateChosenStatValue(yourStat, yourValue, yourValueWithMultiplier);
-    } else {
+    } else if (['Attack', 'SpecialAttack'].includes(opponentStat)) {
         typeMultiplier = calculateTypeMultiplier(opponentCard.type, yourCard.type);
-        yourValueWithMultiplier = yourValue;
         opponentValueWithMultiplier = calculateStatMultiplier(opponentCard, yourCard, opponentStat);
         updateChosenStatValue(`opp-${opponentStat}`, opponentValue, opponentValueWithMultiplier);
     }
@@ -478,21 +479,23 @@ function compareStats() {
 
 function updateCompareStatsLog() {
     // compare types
-    if (yourTurn) {
-        if (yourValueWithMultiplier === 0) {
-            addLog(`${yourCard.type} ${yourStat} is cancelled against ${opponentCard.type} ${opponentStat}`);
-        } else if (yourValueWithMultiplier < yourValue) {
-            addLog(`${yourCard.type} ${yourStat} is reduced against ${opponentCard.type} ${opponentStat}`);
-        } else if (yourValueWithMultiplier > yourValue) {
-            addLog(`${yourCard.type} ${yourStat} is increased against ${opponentCard.type} ${opponentStat}`);
-        }
-    } else {
-        if (opponentValueWithMultiplier === 0) {
-            addLog(`${opponentCard.type} ${opponentStat} is cancelled against ${yourCard.type} ${yourStat}`);
-        } else if (opponentValueWithMultiplier < opponentValue) {
-            addLog(`${opponentCard.type} ${opponentStat} is reduced against ${yourCard.type} ${yourStat}`);
-        } else if (opponentValueWithMultiplier > opponentValue) {
-            addLog(`${opponentCard.type} ${opponentStat} is increased against ${yourCard.type} ${yourStat}`);
+    const yourAttackIsCompared = ['Attack', 'SpecialAttack'].includes(yourStat);
+    const attackCard = yourAttackIsCompared ? yourCard : opponentCard;
+    const defenseCard = yourAttackIsCompared ? opponentCard : yourCard;
+    const attackStat = yourAttackIsCompared ? yourStat : opponentStat;
+    const defenseStat = yourAttackIsCompared ? opponentStat : yourStat;
+    const attackValue = yourAttackIsCompared ? yourValue : opponentValue;
+    const attackValueWithMultiplier = yourAttackIsCompared
+        ? yourValueWithMultiplier
+        : opponentValueWithMultiplier;
+
+    if (['Attack', 'SpecialAttack'].includes(attackStat)) {
+        if (attackValueWithMultiplier === 0) {
+            addLog(`${attackCard.type} ${attackStat} is cancelled against ${defenseCard.type} ${defenseStat}`);
+        } else if (attackValueWithMultiplier < attackValue) {
+            addLog(`${attackCard.type} ${attackStat} is reduced against ${defenseCard.type} ${defenseStat}`);
+        } else if (attackValueWithMultiplier > attackValue) {
+            addLog(`${attackCard.type} ${attackStat} is increased against ${defenseCard.type} ${defenseStat}`);
         }
     }
 
