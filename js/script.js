@@ -77,6 +77,7 @@ let yourTurn = true;
 let evolutionMode = false;
 
 const EVOLUTION_XP = 2;
+const OPPONENT_THINKING_DELAY = 600;
 const SAVED_GAME_KEY = 'pokemon-top-trumps:game:v1';
 const evolutionMap = {
     Bulbasaur: 'Ivysaur', Charmander: 'Charmeleon', Squirtle: 'Wartortle',
@@ -271,11 +272,11 @@ function popCards() {
     updateNameAndType();
     updateStatsButtons();
     updateXpDisplay();
-    elements.turnMessage.innerText = yourTurn ? 'Your turn' : 'Opponent turn';
+    updateTurnMessage(yourTurn ? 'human' : 'opponent');
     //addLog(yourTurn ? 'Your turn' : 'Opponent turn');
 
     if (!yourTurn) {
-        setTimeout(opponentChooseStat, 2000);
+        setTimeout(opponentChooseStat, OPPONENT_THINKING_DELAY);
     }
 }
 
@@ -287,6 +288,18 @@ function updateXpDisplay() {
     elements.opponentXp.innerText = getXpLabel(opponentCard);
 }
 
+function animateXpGain(card) {
+    const xpElement = card === yourCard ? elements.yourXp : elements.opponentXp;
+
+    xpElement.innerText = getXpLabel(card);
+    xpElement.classList.remove('xp-gained');
+    void xpElement.offsetWidth;
+    xpElement.classList.add('xp-gained');
+    xpElement.addEventListener('animationend', () => {
+        xpElement.classList.remove('xp-gained');
+    }, { once: true });
+}
+
 function getXpLabel(card) {
     return evolutionMap[card.name]
         ? `XP ${card.xp}/${EVOLUTION_XP}`
@@ -294,26 +307,60 @@ function getXpLabel(card) {
 }
 
 function hideContinueButton() {
-    elements.continueButton.style.visibility = 'hidden';
-    elements.continueButton.style.display = 'none';
+    elements.continueButton.hidden = true;
 }
 
 function showContinueButton() {
-    elements.continueButton.style.display = 'inline-flex';
-    elements.continueButton.style.visibility = 'visible';
+    elements.continueButton.hidden = false;
+    elements.continueButton.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'nearest'
+    });
+}
+
+function updateTurnMessage(state) {
+    const messages = {
+        human: 'Your turn — choose a stat',
+        opponent: 'Opponent is choosing...',
+        resolving: 'Resolving round...'
+    };
+
+    elements.turnMessage.dataset.state = state;
+    elements.turnMessage.innerText = messages[state] || '';
 }
 
 function resetCardsAnimations() {
     ['your-current-card', 'opponent-current-card'].forEach(id => {
-        getElement(id).classList.remove('shake', 'fade');
+        getElement(id).classList.remove('shake', 'fade', 'card-flipping');
     });
 }
 
-function addLog(message) {
+function addLog(message, result = '') {
     const logElement = document.createElement('span');
     logElement.classList.add('log');
+    if (result) {
+        logElement.classList.add('round-result', `round-result-${result}`);
+    }
     logElement.innerText = message;
     elements.gameLog.append(logElement);
+    return logElement;
+}
+
+function addXpProgressLog(card) {
+    const progress = Math.min((card.xp / EVOLUTION_XP) * 100, 100);
+    const progressElement = addLog('', 'xp');
+    const nameElement = document.createElement('span');
+    const valueElement = document.createElement('span');
+
+    progressElement.style.setProperty('--xp-progress', `${progress}%`);
+    progressElement.setAttribute('aria-label', `${card.name} gained 1 XP. ${card.xp} of ${EVOLUTION_XP}.`);
+
+    nameElement.classList.add('xp-progress-name');
+    nameElement.innerText = `${card.name} XP`;
+    valueElement.classList.add('xp-progress-value');
+    valueElement.innerText = `${card.xp}/${EVOLUTION_XP}`;
+
+    progressElement.append(nameElement, valueElement);
 }
 
 function resetLog() {
@@ -326,10 +373,17 @@ function updateDecksLength() {
 }
 
 function updateImgs() {
+    const yourCardElement = getElement('your-current-card');
+    const opponentCardElement = getElement('opponent-current-card');
+
     if (yourTurn) {
+        yourCardElement.classList.remove('card-hidden');
+        opponentCardElement.classList.add('card-hidden');
         elements.yourImg.src = `img/pokemons/${yourCard.name}.png`;
         elements.opponentImg.src = 'img/pokeball.png';
     } else {
+        yourCardElement.classList.add('card-hidden');
+        opponentCardElement.classList.remove('card-hidden');
         elements.yourImg.src = 'img/pokeball.png';
         elements.opponentImg.src = `img/pokemons/${opponentCard.name}.png`;
     }
@@ -396,22 +450,25 @@ function createStatButton(stat, id, card, showStatValue, isClickable) {
 
 // Gameplay Functions
 function chooseStat(e) {
-    yourStat = e.target.id;
+    yourStat = e.currentTarget.id;
     opponentStat = getOpponentStat(yourStat);
 
     disableYourButtons();
-    revealCard();
-    highlightStats();
-    compareStats();
+    revealCard(() => {
+        highlightStats();
+        compareStats();
+    });
 }
 
 function opponentChooseStat() {
     opponentStat = getHighestStat(opponentCard);
+    if (!stats.includes(opponentStat)) opponentStat = 'HP';
     yourStat = getOpponentStat(opponentStat);
 
-    revealCard();
-    highlightStats();
-    compareStats();
+    revealCard(() => {
+        highlightStats();
+        compareStats();
+    });
 }
 
 function disableYourButtons() {
@@ -419,16 +476,30 @@ function disableYourButtons() {
     yourButtons.forEach(button => button.style.pointerEvents = 'none');
 }
 
-function revealCard() {
-    if (yourTurn) {
-        elements.opponentImg.src = `img/pokemons/${opponentCard.name}.png`;
-        elements.opponentName.innerText = opponentCard.name;
-    } else {
-        elements.yourImg.src = `img/pokemons/${yourCard.name}.png`;
-        elements.yourName.innerText = yourCard.name;
-    }
+function revealCard(onRevealed) {
+    const hiddenCardElement = getElement(yourTurn ? 'opponent-current-card' : 'your-current-card');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const halfFlipDuration = reduceMotion ? 0 : 300;
 
-    revealStats();
+    hiddenCardElement.classList.add('card-flipping');
+
+    setTimeout(() => {
+        if (yourTurn) {
+            elements.opponentImg.src = `img/pokemons/${opponentCard.name}.png`;
+            elements.opponentName.innerText = opponentCard.name;
+        } else {
+            elements.yourImg.src = `img/pokemons/${yourCard.name}.png`;
+            elements.yourName.innerText = yourCard.name;
+        }
+
+        hiddenCardElement.classList.remove('card-hidden');
+        revealStats();
+    }, halfFlipDuration);
+
+    setTimeout(() => {
+        hiddenCardElement.classList.remove('card-flipping');
+        if (typeof onRevealed === 'function') onRevealed();
+    }, halfFlipDuration * 2);
 }
 
 function revealStats() {
@@ -458,6 +529,7 @@ function highlightStats() {
 }
 
 function compareStats() {
+    updateTurnMessage('resolving');
     yourValue = getStatValue(yourCard, yourStat);
     opponentValue = getStatValue(opponentCard, opponentStat);
     yourValueWithMultiplier = yourValue;
@@ -475,6 +547,7 @@ function compareStats() {
     }
 
     updateCompareStatsLog();
+    applyCardsAnimations();
 }
 
 function updateCompareStatsLog() {
@@ -500,16 +573,16 @@ function updateCompareStatsLog() {
     }
 
     // compare stats
-    addLog(`${yourStat} VS. ${opponentStat}`);
-    addLog(`${yourValueWithMultiplier} VS. ${opponentValueWithMultiplier}`);
+    addLog(`${yourStat} VS. ${opponentStat}`, 'comparison-label');
+    addLog(`${yourValueWithMultiplier} VS. ${opponentValueWithMultiplier}`, 'comparison-values');
 
     // result
     if (yourValueWithMultiplier > opponentValueWithMultiplier) {
-        addLog(`You win!`);
+        addLog(`You win!`, 'win');
     } else if (yourValueWithMultiplier < opponentValueWithMultiplier) {
-        addLog(`You lose!`);
+        addLog(`You lose!`, 'loss');
     } else {
-        addLog(`Draw!`);
+        addLog(`Draw!`, 'draw');
     }
 }
 
@@ -529,7 +602,11 @@ function addCurrentCardsToWinner() {
         opponentDeck.unshift(opponentCard);
     }
 
-    setTimeout(showContinueButton, evolutionHappened ? 2200 : 1000);
+    if (evolutionHappened) {
+        setTimeout(showContinueButton, 2200);
+    } else {
+        showContinueButton();
+    }
 }
 
 function processEvolutionResult(winner, loser) {
@@ -541,9 +618,10 @@ function processEvolutionResult(winner, loser) {
     if (!evolvedName) return false;
 
     winner.xp += 1;
+    animateXpGain(winner);
 
     if (winner.xp < EVOLUTION_XP) {
-        addLog(`${winner.name} gained 1 XP (${winner.xp}/${EVOLUTION_XP})`);
+        addXpProgressLog(winner);
         return false;
     }
 
@@ -637,7 +715,6 @@ function applyStatAnimation(chosenStat, oldStatValue, newStatValue) {
         chosenStatElement.classList.add('stat-reduced');
     }
 
-    setTimeout(applyCardsAnimations, 1000);
 }
 
 function applyCardsAnimations() {
@@ -655,7 +732,7 @@ function applyCardsAnimations() {
         opponentCardElement.classList.add('fade');
     }
 
-    setTimeout(addCurrentCardsToWinner, 1000);
+    addCurrentCardsToWinner();
 }
 
 // Game Over Handling

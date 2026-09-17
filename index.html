@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css?v=persistence-1">
+    <link rel="stylesheet" href="style.css?v=stat-comparison-1">
     <script src="js/PokemonCard.js" defer></script>
     <script src="js/Type.js?v=type-chart-1" defer></script>
     <script src="js/Stat.js?v=attack-multiplier-1" defer></script>
-    <script src="js/script.js?v=attack-multiplier-1" defer></script>
+    <script src="js/script.js?v=stat-comparison-1" defer></script>
     <title>Pokemon Top Trumps</title>
 </head>
 
@@ -31,7 +31,7 @@
 
         <div id="table" class="table">
             <div class="row ">
-                <span id="turn-message" class="badge"></span>
+                <span id="turn-message" class="badge" role="status" aria-live="polite"></span>
             </div>
 
             <div class="row card-row">
@@ -47,7 +47,7 @@
                         <div id="your-options" class="stat-options"></div>
                         <div id="your-evolution-banner" class="evolution-banner" aria-live="polite"></div>
                     </div>
-                    <span id="your-xp" class="xp-chip" hidden></span>
+                    <span id="your-xp" class="xp-chip" role="status" aria-live="polite" hidden></span>
                     <span id="your-cards" class="stat-chip" data-label="Your cards"></span>
                 </div>
                 <div>   
@@ -61,7 +61,7 @@
                         <div id="opponent-options" class="stat-options"></div>
                         <div id="opponent-evolution-banner" class="evolution-banner" aria-live="polite"></div>
                     </div>
-                    <span id="opponent-xp" class="xp-chip" hidden></span>
+                    <span id="opponent-xp" class="xp-chip" role="status" aria-live="polite" hidden></span>
                     <span id="opponent-cards" class="stat-chip" data-label="Opponent cards"></span>
                 </div>
             </div>
@@ -69,7 +69,7 @@
             <div class="row">
                 <div class="col col-center">
                     <div id="game-log" class="log"></div>
-                    <button id="next-turn" class="primary-action">Continue</button>
+                    <button id="next-turn" class="primary-action" type="button" hidden>Continue</button>
                 </div>
             </div>
         </div>
@@ -112,7 +112,7 @@
                     <li>HP and Speed compare directly with your opponent.</li>
                     <li>Attack and Special Attack battle against the opponent's defensive stats.</li>
                     <li>Defense and Special Defense confront the opponent's offensive stats.</li>
-                    <li>Type multipliers apply to offensive and defensive stats.</li>
+                    <li>Type multipliers apply only to Attack and Special Attack.</li>
                     <li>In Evolution Mode, every two wins evolve a card, including into a third stage. A loss resets its XP and form.</li>
                 </ol>
             </div>
