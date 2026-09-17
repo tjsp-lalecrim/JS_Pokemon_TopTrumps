@@ -32,21 +32,11 @@ function calculateStatMultiplier(offensiveCard, defensiveCard, stat) {
         return null;
     }
 
-    let statMultiplier = 1;
-
-    if (['Attack', 'SpecialAttack'].includes(stat)) {
-        statMultiplier = calculateTypeMultiplier(offensiveCard.type, defensiveCard.type);
-    } else if (['Defense', 'SpecialDefense'].includes(stat)) {
-        const defensiveMultiplier = calculateTypeMultiplier(defensiveCard.type, offensiveCard.type);
-        statMultiplier = defensiveMultiplier === 0 ? Infinity : 1 / defensiveMultiplier;
-    }
+    const statMultiplier = ['Attack', 'SpecialAttack'].includes(stat)
+        ? calculateTypeMultiplier(offensiveCard.type, defensiveCard.type)
+        : 1;
 
     const boostedStat = statValue * statMultiplier;
-
-    if (!Number.isFinite(boostedStat)) {
-        return Infinity;
-    }
-
     return Math.trunc(boostedStat);
 }
 
